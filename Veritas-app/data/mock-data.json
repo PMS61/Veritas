@@ -1,0 +1,124 @@
+{
+  "alerts": [
+    {
+      "id": 1,
+      "type": "Misinformation",
+      "source": "Twitter/X",
+      "content": "False claim about vaccine side effects spreading rapidly",
+      "severity": "High",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "verified": false,
+      "location": "Global",
+      "engagement": 15420,
+      "credibilityScore": 0.23
+    },
+    {
+      "id": 2,
+      "type": "Trend Spike",
+      "source": "Multiple",
+      "content": "Unusual activity detected around election topic",
+      "severity": "Medium",
+      "timestamp": "2024-01-15T10:15:00Z",
+      "verified": true,
+      "location": "United States",
+      "engagement": 8930,
+      "credibilityScore": 0.78
+    },
+    {
+      "id": 3,
+      "type": "Source Alert",
+      "source": "Telegram",
+      "content": "New suspicious channel identified spreading false information",
+      "severity": "High",
+      "timestamp": "2024-01-15T09:30:00Z",
+      "verified": false,
+      "location": "Europe",
+      "engagement": 3420,
+      "credibilityScore": 0.15
+    }
+  ],
+  "sources": [
+    {
+      "name": "Twitter/X",
+      "count": 1247,
+      "percentage": 35,
+      "status": "active",
+      "lastUpdate": "2024-01-15T10:32:00Z"
+    },
+    {
+      "name": "Telegram",
+      "count": 892,
+      "percentage": 25,
+      "status": "active",
+      "lastUpdate": "2024-01-15T10:31:00Z"
+    },
+    {
+      "name": "News Portals",
+      "count": 634,
+      "percentage": 18,
+      "status": "active",
+      "lastUpdate": "2024-01-15T10:30:00Z"
+    },
+    {
+      "name": "Reddit",
+      "count": 445,
+      "percentage": 12,
+      "status": "active",
+      "lastUpdate": "2024-01-15T10:29:00Z"
+    },
+    {
+      "name": "Forums",
+      "count": 267,
+      "percentage": 7,
+      "status": "degraded",
+      "lastUpdate": "2024-01-15T10:25:00Z"
+    },
+    {
+      "name": "WhatsApp",
+      "count": 112,
+      "percentage": 3,
+      "status": "limited",
+      "lastUpdate": "2024-01-15T10:20:00Z"
+    }
+  ],
+  "trends": [
+    {
+      "keyword": "vaccine misinformation",
+      "volume": 15420,
+      "sentiment": -0.7,
+      "growth": 0.23,
+      "sources": ["Twitter/X", "Telegram", "Forums"]
+    },
+    {
+      "keyword": "election integrity",
+      "volume": 8930,
+      "sentiment": -0.3,
+      "growth": 0.15,
+      "sources": ["Twitter/X", "News Portals", "Reddit"]
+    },
+    {
+      "keyword": "climate change denial",
+      "volume": 5670,
+      "sentiment": -0.8,
+      "growth": 0.08,
+      "sources": ["YouTube", "Forums", "Telegram"]
+    }
+  ],
+  "systemMetrics": {
+    "analysisEngine": {
+      "status": "operational",
+      "performance": 95,
+      "throughput": "2.3k items/min"
+    },
+    "dataIngestion": {
+      "status": "operational",
+      "performance": 87,
+      "throughput": "12.7k messages/min"
+    },
+    "verificationSystem": {
+      "status": "degraded",
+      "performance": 73,
+      "throughput": "API rate limits active"
+    }
+  }
+}
