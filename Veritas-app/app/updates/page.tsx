@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PublicLayout } from "@/components/public-layout";
+import { MobileLoading, MobileCardSkeleton } from "@/components/mobile-loading";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Card,
   CardContent,
@@ -132,9 +134,21 @@ const trendingTopics = [
 ];
 
 export default function UpdatesPage() {
+  const isMobile = useIsMobile();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCredibility, setSelectedCredibility] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Simulate loading when filters change
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm, selectedCredibility, selectedCategory]);
 
   const getCredibilityBadge = (credibility: string) => {
     const colors = {

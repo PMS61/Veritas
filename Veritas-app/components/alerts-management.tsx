@@ -20,12 +20,12 @@ import {
   Search,
   Settings,
   Shield,
+  Eye,
   Smartphone,
   Users,
   Zap,
   CheckCircle,
   XCircle,
-  Eye,
 } from "lucide-react"
 
 interface Alert {
@@ -332,8 +332,8 @@ export function AlertsManagement() {
 
       {/* Main Tabs */}
       <Tabs defaultValue="alerts" className="space-y-3 xs:space-y-4 sm:space-y-6">
-        <div className="overflow-x-auto">
-          <TabsList className="grid min-w-[300px] w-full grid-cols-3 h-9 xs:h-10">
+        <div className="w-full">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto sm:h-9 xs:sm:h-10 gap-1">
             <TabsTrigger value="alerts" className="text-xs xs:text-sm tap-target">Active Alerts</TabsTrigger>
             <TabsTrigger value="rules" className="text-xs xs:text-sm tap-target">Alert Rules</TabsTrigger>
             <TabsTrigger value="channels" className="text-xs xs:text-sm tap-target">Notification Channels</TabsTrigger>

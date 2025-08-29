@@ -316,6 +316,30 @@
     .mobile-sheet-bottom {
         @apply fixed bottom-0 left-0 right-0 max-h-[85vh] rounded-t-xl p-4 overflow-auto bg-background shadow-lg z-50 transform transition-transform duration-300;
     }
+
+    /* Additional responsive container utilities */
+    .responsive-container {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+
+    /* Ensure all flex containers don't overflow */
+    .flex-container-responsive {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        min-width: 0;
+    }
+
+    /* Make sure text doesn't cause overflow */
+    .text-responsive {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
 }
 
 /* Mobile-specific utility classes */
@@ -367,5 +391,17 @@
         .mobile-spacing-y {
             @apply space-y-8;
         }
+    }
+
+    /* Hide scrollbar utility */
+    .scrollbar-hide {
+        /* Firefox */
+        scrollbar-width: none;
+        /* Safari and Chrome */
+        -ms-overflow-style: none;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
     }
 }

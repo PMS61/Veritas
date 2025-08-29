@@ -175,23 +175,13 @@ export function DashboardOverview() {
 
   const handlePublishAlert = async () => {
     try {
-      // Simulate API call
-      const response = await fetch("/api/admin/alerts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: alertMessage,
-          type: alertType,
-          timestamp: new Date().toISOString(),
-        }),
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log("System alert published successfully", {
+        message: alertMessage,
+        type: alertType,
+        timestamp: new Date().toISOString(),
       });
-
-      if (response.ok) {
-        console.log("System alert published successfully");
-        // In real app, would show toast notification
-      } else {
-        console.error("Failed to publish alert");
-      }
     } catch (error) {
       console.error("Error publishing alert:", error);
     }
@@ -210,30 +200,13 @@ export function DashboardOverview() {
     if (!selectedAction) return;
 
     try {
-      let endpoint = "";
-      let method = "GET";
-
-      switch (selectedAction.id) {
-        case "pending-verifications":
-          endpoint = "/api/admin/verifications/pending";
-          break;
-        case "flagged-content":
-          endpoint = "/api/admin/content/flagged";
-          break;
-        case "system-alerts":
-          endpoint = "/api/admin/system/alerts";
-          break;
-        case "source-review":
-          endpoint = "/api/admin/sources/pending";
-          break;
-      }
-
-      const response = await fetch(endpoint, { method });
-      if (response.ok) {
-        const data = await response.json();
-        console.log(`${selectedAction.title} action executed:`, data);
-        // In real app, would navigate to specific page or show results
-      }
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log(`${selectedAction.title} action executed`, {
+        actionId: selectedAction.id,
+        timestamp: new Date().toISOString()
+      });
+      // In real app, would navigate to specific page or show results
     } catch (error) {
       console.error("Error executing quick action:", error);
     }
@@ -251,22 +224,13 @@ export function DashboardOverview() {
     if (!selectedEmergencyAction) return;
 
     try {
-      const response = await fetch("/api/admin/emergency", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: selectedEmergencyAction,
-          timestamp: new Date().toISOString(),
-          adminId: "current-admin-id", // Would get from auth context
-        }),
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log(`Emergency action executed: ${selectedEmergencyAction}`, {
+        action: selectedEmergencyAction,
+        timestamp: new Date().toISOString(),
+        adminId: "current-admin-id", // Would get from auth context
       });
-
-      if (response.ok) {
-        console.log(`Emergency action executed: ${selectedEmergencyAction}`);
-        // In real app, would show confirmation and update UI state
-      } else {
-        console.error("Failed to execute emergency action");
-      }
     } catch (error) {
       console.error("Error executing emergency action:", error);
     }

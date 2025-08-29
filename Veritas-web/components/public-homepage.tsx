@@ -23,6 +23,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { GettingStarted } from "@/components/getting-started";
 
 // Mock data for public interface
 const recentVerifications = [
@@ -147,7 +148,7 @@ export function PublicHomepage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <Card className="text-center mobile-card-spacing hover:shadow-lg transition-all duration-200 touch-pan-y">
               <CardHeader className="pb-2 xs:pb-4">
                 <Eye className="h-8 w-8 xs:h-10 xs:w-10 md:h-12 md:w-12 mx-auto text-primary mb-2 xs:mb-3 md:mb-4" />
@@ -214,7 +215,7 @@ export function PublicHomepage() {
       {/* Stats */}
       <section className="py-10 xs:py-12 md:py-16 bg-muted/50">
         <div className="mobile-container">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 xs:gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
             {stats.map((stat, i) => (
               <Card
                 key={i}
@@ -303,6 +304,8 @@ export function PublicHomepage() {
           </div>
         </div>
       </section>
+
+      <GettingStarted />
 
       {/* CTA */}
       <section className="py-10 xs:py-12 md:py-16 bg-primary text-primary-foreground">

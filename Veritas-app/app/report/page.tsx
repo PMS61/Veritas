@@ -1,9 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { PublicLayout } from "@/components/public-layout"
+import { MobileVerificationReport } from "@/components/mobile-verification-report"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertTriangle, Upload, Send, CheckCircle, Shield, Eye } from "lucide-react"
 
 export default function ReportPage() {
+  const isMobile = useIsMobile()
   const [formData, setFormData] = useState({
     type: "",
     source: "",
@@ -39,8 +41,27 @@ export default function ReportPage() {
     }, 2000)
   }
 
+  const handleMobileReportSubmit = (report: any) => {
+    console.log('Mobile report submitted:', report)
+    setIsSubmitted(true)
+  }
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  // Use mobile component on mobile devices
+  if (isMobile) {
+    return (
+      <PublicLayout>
+        <div className="mobile-container py-4">
+          <MobileVerificationReport
+            onSubmit={handleMobileReportSubmit}
+            mode="create"
+          />
+        </div>
+      </PublicLayout>
+    )
   }
 
   if (isSubmitted) {

@@ -259,18 +259,9 @@ export default function SystemManagementPage() {
   const handleServiceAction = async (serviceName: string, action: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `/api/admin/system/services/${serviceName}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action }),
-        },
-      );
-
-      if (response.ok) {
-        console.log(`Service ${serviceName} ${action} executed successfully`);
-      }
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log(`Service ${serviceName} ${action} executed successfully`);
     } catch (error) {
       console.error(`Error executing ${action} on ${serviceName}:`, error);
     }
@@ -280,15 +271,9 @@ export default function SystemManagementPage() {
   const handleBackupAction = async (backupId: string, action: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/admin/system/backups/${backupId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
-      });
-
-      if (response.ok) {
-        console.log(`Backup ${action} executed successfully`);
-      }
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log(`Backup ${action} executed successfully`);
     } catch (error) {
       console.error(`Error executing backup ${action}:`, error);
     }
@@ -299,15 +284,9 @@ export default function SystemManagementPage() {
   const handleConfigUpdate = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/admin/system/config", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(systemConfig),
-      });
-
-      if (response.ok) {
-        console.log("System configuration updated successfully");
-      }
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log("System configuration updated successfully");
     } catch (error) {
       console.error("Error updating system configuration:", error);
     }
@@ -317,22 +296,13 @@ export default function SystemManagementPage() {
   const handleMaintenanceMode = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/admin/system/maintenance", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          enabled: !systemConfig.maintenanceMode,
-          message: maintenanceMessage,
-        }),
-      });
-
-      if (response.ok) {
-        setSystemConfig((prev) => ({
-          ...prev,
-          maintenanceMode: !prev.maintenanceMode,
-        }));
-        console.log("Maintenance mode toggled successfully");
-      }
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSystemConfig((prev) => ({
+        ...prev,
+        maintenanceMode: !prev.maintenanceMode,
+      }));
+      console.log("Maintenance mode toggled successfully");
     } catch (error) {
       console.error("Error toggling maintenance mode:", error);
     }
@@ -342,21 +312,17 @@ export default function SystemManagementPage() {
 
   const exportSystemLogs = async () => {
     try {
-      const response = await fetch("/api/admin/system/logs/export", {
-        method: "GET",
-      });
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `system-logs-${new Date().toISOString().split("T")[0]}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }
+      // Simulate export for static export - create dummy CSV data
+      const csvData = "timestamp,level,message,source\n2024-01-15T10:30:00Z,INFO,System started,core\n2024-01-15T10:31:00Z,WARNING,High memory usage,monitor\n";
+      const blob = new Blob([csvData], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `system-logs-${new Date().toISOString().split("T")[0]}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error exporting system logs:", error);
     }

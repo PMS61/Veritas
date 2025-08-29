@@ -83,7 +83,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 safe-area-top">
-        <div className="mobile-container flex h-14 sm:h-16 md:h-18 items-center justify-between">
+        <div className="px-4 sm:px-6 lg:px-8 flex h-14 sm:h-16 md:h-18 items-center justify-between max-w-7xl mx-auto">
           <Link href="/" className="flex items-center gap-2 tap-target">
             <Eye className="h-6 w-6 md:h-8 md:w-8 text-primary flex-shrink-0" />
             <span className="text-lg md:text-2xl font-bold truncate">
@@ -157,7 +157,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[85%] max-w-[320px] px-0 flex flex-col h-full safe-area-top safe-area-bottom"
+                className="w-[85%] max-w-[320px] px-0 flex flex-col h-full safe-area-top safe-area-bottom overflow-hidden"
               >
                 {/* Mobile menu header */}
                 <div className="flex items-center justify-between p-4 border-b bg-background">

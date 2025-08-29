@@ -223,20 +223,13 @@ export default function UsersPage() {
     if (!selectedUser) return;
 
     try {
-      // Simulate API call
-      const response = await fetch(`/api/admin/users/${selectedUser.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedUser),
-      });
-
-      if (response.ok) {
-        setUsers(
-          users.map((u) => (u.id === selectedUser.id ? selectedUser : u)),
-        );
-        setEditDialog(false);
-        console.log("User updated successfully");
-      }
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setUsers(
+        users.map((u) => (u.id === selectedUser.id ? selectedUser : u)),
+      );
+      setEditDialog(false);
+      console.log("User updated successfully");
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -246,16 +239,11 @@ export default function UsersPage() {
     if (!selectedUser) return;
 
     try {
-      // Simulate API call
-      const response = await fetch(`/api/admin/users/${selectedUser.id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        setUsers(users.filter((u) => u.id !== selectedUser.id));
-        setDeleteDialog(false);
-        console.log("User deleted successfully");
-      }
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setUsers(users.filter((u) => u.id !== selectedUser.id));
+      setDeleteDialog(false);
+      console.log("User deleted successfully");
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -278,19 +266,12 @@ export default function UsersPage() {
     };
 
     try {
-      // Simulate API call
-      const response = await fetch("/api/admin/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userToCreate),
-      });
-
-      if (response.ok) {
-        setUsers([...users, userToCreate]);
-        setCreateDialog(false);
-        setNewUser({ role: "user", status: "pending", permissions: ["basic"] });
-        console.log("User created successfully");
-      }
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setUsers([...users, userToCreate]);
+      setCreateDialog(false);
+      setNewUser({ role: "user", status: "pending", permissions: ["basic"] });
+      console.log("User created successfully");
     } catch (error) {
       console.error("Error creating user:", error);
     }
@@ -319,69 +300,39 @@ export default function UsersPage() {
 
   const executeBulkAction = async () => {
     try {
-      let endpoint = "/api/admin/users/bulk";
-      const payload = {
-        userIds: selectedUsers,
-        action: bulkAction,
-      };
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Add specific data based on action
-      switch (bulkAction) {
-        case "activate":
-          payload.status = "active";
-          break;
-        case "suspend":
-          payload.status = "suspended";
-          break;
-        case "delete":
-          endpoint = "/api/admin/users/bulk-delete";
-          break;
-        case "promote":
-          payload.role = "moderator";
-          break;
-        case "demote":
-          payload.role = "user";
-          break;
-      }
+      // Update local state based on action
+      let updatedUsers = [...users];
 
-      const response = await fetch(endpoint, {
-        method: bulkAction === "delete" ? "DELETE" : "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      selectedUsers.forEach((userId) => {
+        const userIndex = updatedUsers.findIndex((u) => u.id === userId);
+        if (userIndex !== -1) {
+          switch (bulkAction) {
+            case "activate":
+              updatedUsers[userIndex].status = "active";
+              break;
+            case "suspend":
+              updatedUsers[userIndex].status = "suspended";
+              break;
+            case "delete":
+              updatedUsers = updatedUsers.filter((u) => u.id !== userId);
+              break;
+            case "promote":
+              updatedUsers[userIndex].role = "moderator";
+              break;
+            case "demote":
+              updatedUsers[userIndex].role = "user";
+              break;
+          }
+        }
       });
 
-      if (response.ok) {
-        // Update local state based on action
-        let updatedUsers = [...users];
-
-        selectedUsers.forEach((userId) => {
-          const userIndex = updatedUsers.findIndex((u) => u.id === userId);
-          if (userIndex !== -1) {
-            switch (bulkAction) {
-              case "activate":
-                updatedUsers[userIndex].status = "active";
-                break;
-              case "suspend":
-                updatedUsers[userIndex].status = "suspended";
-                break;
-              case "delete":
-                updatedUsers = updatedUsers.filter((u) => u.id !== userId);
-                break;
-              case "promote":
-                updatedUsers[userIndex].role = "moderator";
-                break;
-              case "demote":
-                updatedUsers[userIndex].role = "user";
-                break;
-            }
-          }
-        });
-
-        setUsers(updatedUsers);
-        setSelectedUsers([]);
-        setBulkActionDialog(false);
-        console.log(`Bulk ${bulkAction} completed successfully`);
-      }
+      setUsers(updatedUsers);
+      setSelectedUsers([]);
+      setBulkActionDialog(false);
+      console.log(`Bulk ${bulkAction} completed successfully`);
     } catch (error) {
       console.error(`Error executing bulk ${bulkAction}:`, error);
     }
@@ -389,21 +340,22 @@ export default function UsersPage() {
 
   const exportUsers = async () => {
     try {
-      const response = await fetch("/api/admin/users/export", {
-        method: "GET",
-      });
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `users-export-${new Date().toISOString().split("T")[0]}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }
+      // Simulate export for static export - create CSV data from current users
+      const csvHeaders = "id,name,email,role,status,joinDate,lastActive,verificationsCount\n";
+      const csvData = users.map(user => 
+        `${user.id},${user.name},${user.email},${user.role},${user.status},${user.joinDate},${user.lastActive},${user.verificationsCount}`
+      ).join('\n');
+      const fullCsv = csvHeaders + csvData;
+      
+      const blob = new Blob([fullCsv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `users-export-${new Date().toISOString().split("T")[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error exporting users:", error);
     }

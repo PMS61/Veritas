@@ -199,7 +199,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           sidebarCollapsed && !mobileMenuOpen ? "w-16" : "w-64"
         } transition-all duration-300 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col
         ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0 fixed lg:relative z-50 h-full shadow-xl backdrop-blur-sm safe-area-left safe-area-top safe-area-bottom overflow-hidden`}
+        lg:translate-x-0 fixed lg:relative z-50 h-full shadow-xl backdrop-blur-sm safe-area-left safe-area-top safe-area-bottom overflow-hidden
+        ${isMobile ? 'w-[85%] max-w-[320px]' : ''}`}
       >
         {/* Header */}
         <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
@@ -390,10 +391,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <header className="h-14 sm:h-16 bg-card border-b border-border flex items-center justify-between px-4 lg:px-6 safe-area-top">
+              {/* Main Content */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Top Bar */}
+          <header className="h-14 sm:h-16 bg-card border-b border-border flex items-center justify-between px-3 sm:px-4 lg:px-6 safe-area-top">
           <div className="flex items-center gap-2 sm:gap-4">
             <Button
               variant="ghost"
@@ -433,7 +434,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Content Area */}
-        <main className="flex-1 overflow-auto p-3 xs:p-4 lg:p-6 safe-area-bottom">{children}</main>
+        <main className="flex-1 min-h-0 overflow-auto p-2 sm:p-3 lg:p-6 safe-area-bottom">{children}</main>
       </div>
     </div>
   );

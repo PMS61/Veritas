@@ -228,7 +228,7 @@ export default function VerifyPage() {
                 <CardTitle>How Verification Works</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   <div className="text-center space-y-2">
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto">
                       <Search className="w-6 h-6 text-primary" />

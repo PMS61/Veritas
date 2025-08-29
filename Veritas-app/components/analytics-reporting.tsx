@@ -248,12 +248,12 @@ export function AnalyticsReporting() {
 
       {/* Main Analytics Tabs */}
       <Tabs defaultValue="trends" className="space-y-3 xs:space-y-4 sm:space-y-6">
-        <div className="overflow-x-auto">
-          <TabsList className="grid min-w-[450px] w-full grid-cols-4 h-9 xs:h-10">
-            <TabsTrigger value="trends" className="text-xs xs:text-sm tap-target">Trend Analysis</TabsTrigger>
-            <TabsTrigger value="sources" className="text-xs xs:text-sm tap-target">Source Analytics</TabsTrigger>
-            <TabsTrigger value="geographic" className="text-xs xs:text-sm tap-target">Geographic Data</TabsTrigger>
-            <TabsTrigger value="categories" className="text-xs xs:text-sm tap-target">Categories</TabsTrigger>
+        <div className="w-full overflow-x-auto scrollbar-hide">
+          <TabsList className="flex w-max min-w-full sm:grid sm:grid-cols-4 sm:w-full h-9 xs:h-10 gap-1 sm:gap-0">
+            <TabsTrigger value="trends" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Trend Analysis</TabsTrigger>
+            <TabsTrigger value="sources" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Source Analytics</TabsTrigger>
+            <TabsTrigger value="geographic" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Geographic Data</TabsTrigger>
+            <TabsTrigger value="categories" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Categories</TabsTrigger>
           </TabsList>
         </div>
 

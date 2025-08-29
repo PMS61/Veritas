@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { PublicLayout } from "@/components/public-layout"
+import { MobileVerificationFeed } from "@/components/mobile-verification-feed"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -60,9 +62,11 @@ const trendingClaims = [
 ]
 
 export default function VerifyPage() {
+  const isMobile = useIsMobile()
   const [verificationInput, setVerificationInput] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
   const [verificationResult, setVerificationResult] = useState<any>(null)
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'verified' | 'disputed' | 'pending'>('all')
 
   const handleVerification = async () => {
     if (!verificationInput.trim()) return
@@ -85,6 +89,43 @@ export default function VerifyPage() {
       })
       setIsVerifying(false)
     }, 2000)
+  }
+
+  const handleItemClick = (item: any) => {
+    console.log('Clicked verification item:', item)
+    // Navigate to detail view or open modal
+  }
+
+  // Use mobile component on mobile devices
+  if (isMobile) {
+    return (
+      <PublicLayout>
+        <div className="mobile-container">
+          {/* Mobile Filter Tabs */}
+          <div className="sticky top-0 bg-background border-b z-10 -mx-4 px-4 py-3">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+              {(['all', 'verified', 'disputed', 'pending'] as const).map((filter) => (
+                <Button
+                  key={filter}
+                  variant={selectedFilter === filter ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedFilter(filter)}
+                  className="whitespace-nowrap tap-target"
+                >
+                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          <MobileVerificationFeed
+            filter={selectedFilter}
+            onItemClick={handleItemClick}
+            className="pt-4"
+          />
+        </div>
+      </PublicLayout>
+    )
   }
 
   const getStatusIcon = (status: string) => {

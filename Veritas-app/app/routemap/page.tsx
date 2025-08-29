@@ -3,12 +3,59 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PublicLayout } from "@/components/public-layout";
+import { MobileTrendingTopics } from "@/components/mobile-trending-topics";
+import { useIsMobile } from "@/hooks/use-mobile";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Map, FileCode, Shield } from "lucide-react";
+import { LayoutDashboard, Map, FileCode, Shield, TrendingUp } from "lucide-react";
 
 export default function RouteMapPage() {
   const pathname = usePathname();
+  const isMobile = useIsMobile();
+
+  const handleTopicClick = (topic: any) => {
+    console.log('Clicked trending topic:', topic);
+    // Navigate to topic detail or open modal
+  };
+
+  // Use mobile trending topics on mobile devices
+  if (isMobile) {
+    return (
+      <PublicLayout>
+        <div className="mobile-container">
+          {/* Mobile Header */}
+          <div className="text-center py-4">
+            <TrendingUp className="w-8 h-8 mx-auto text-primary mb-2" />
+            <h1 className="text-2xl font-bold">Trending</h1>
+            <p className="text-sm text-muted-foreground">
+              See what's being verified now
+            </p>
+          </div>
+          
+          {/* Mobile Filter Tabs */}
+          <div className="sticky top-0 bg-background border-b z-10 -mx-4 px-4 py-3 mb-4">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+              {(['all', 'verified', 'disputed', 'trending', 'local'] as const).map((filter) => (
+                <Button
+                  key={filter}
+                  variant="outline"
+                  size="sm"
+                  className="whitespace-nowrap tap-target"
+                >
+                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          <MobileTrendingTopics
+            onTopicClick={handleTopicClick}
+          />
+        </div>
+      </PublicLayout>
+    );
+  }
 
   // Define all the routes in the application
   const routes = [

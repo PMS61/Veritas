@@ -44,9 +44,9 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // Simulate authentication
+    // Simulate authentication with demo credentials
     setTimeout(() => {
-      if (email && password) {
+      if (email === "user@demo.com" && password === "demo123") {
         const userData = { email, role: "public" as const };
         console.log("Logging in user:", userData);
         login(userData);
@@ -55,6 +55,8 @@ export default function LoginPage() {
         setTimeout(() => {
           router.push("/dashboard");
         }, 100);
+      } else if (email && password) {
+        setError("Invalid credentials. Please use the demo credentials provided above.");
       } else {
         setError("Please enter valid credentials");
       }
@@ -72,9 +74,9 @@ export default function LoginPage() {
     const password = formData.get("admin-password") as string;
     const accessCode = formData.get("access-code") as string;
 
-    // Simulate admin authentication
+    // Simulate admin authentication with demo credentials
     setTimeout(() => {
-      if (email && password && accessCode === "VERITAS2025") {
+      if (email === "admin@demo.com" && password === "admin123" && accessCode === "VERITAS2025") {
         const userData = { email, role: "admin" as const };
         console.log("Logging in admin:", userData);
         login(userData);
@@ -83,6 +85,8 @@ export default function LoginPage() {
         setTimeout(() => {
           router.push("/admin");
         }, 100);
+      } else if (email && password && accessCode) {
+        setError("Invalid admin credentials. Please use the demo credentials provided above.");
       } else {
         setError("Invalid admin credentials or access code");
       }
@@ -117,8 +121,23 @@ export default function LoginPage() {
                   Sign in to access verified information and analysis
                 </CardDescription>
               </CardHeader>
+              
+              {/* Demo credentials info */}
+              <CardContent className="pb-0">
+                <Alert className="mb-4 bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800">
+                  <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <AlertDescription className="text-xs xs:text-sm text-blue-800 dark:text-blue-200">
+                    <strong>Demo Credentials:</strong>
+                    <br />
+                    Email: <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded">user@demo.com</code>
+                    <br />
+                    Password: <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded">demo123</code>
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+              
               <form onSubmit={handlePublicLogin}>
-                <CardContent className="space-y-3 xs:space-y-4">
+                <CardContent className="space-y-3 xs:space-y-4 pt-0">
                   {error && (
                     <Alert variant="destructive" className="py-2">
                       <AlertCircle className="h-4 w-4" />
@@ -199,8 +218,25 @@ export default function LoginPage() {
                   Sign in to the admin dashboard
                 </CardDescription>
               </CardHeader>
+              
+              {/* Demo admin credentials info */}
+              <CardContent className="pb-0">
+                <Alert className="mb-4 bg-orange-50 border-orange-200 dark:bg-orange-950 dark:border-orange-800">
+                  <AlertCircle className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                  <AlertDescription className="text-xs xs:text-sm text-orange-800 dark:text-orange-200">
+                    <strong>Demo Admin Credentials:</strong>
+                    <br />
+                    Email: <code className="bg-orange-100 dark:bg-orange-900 px-1 rounded">admin@demo.com</code>
+                    <br />
+                    Password: <code className="bg-orange-100 dark:bg-orange-900 px-1 rounded">admin123</code>
+                    <br />
+                    Access Code: <code className="bg-orange-100 dark:bg-orange-900 px-1 rounded">VERITAS2025</code>
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+              
               <form onSubmit={handleAdminLogin}>
-                <CardContent className="space-y-3 xs:space-y-4">
+                <CardContent className="space-y-3 xs:space-y-4 pt-0">
                   {error && (
                     <Alert variant="destructive" className="py-2">
                       <AlertCircle className="h-4 w-4" />

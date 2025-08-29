@@ -299,17 +299,19 @@ export function MonitoringFeeds() {
                 />
               </div>
             </div>
-            <div className="overflow-auto w-full">
+            <div className="w-full">
               <Tabs value={selectedSource} onValueChange={setSelectedSource} className="w-full">
-                <TabsList className="grid min-w-[600px] md:min-w-0 grid-cols-7 w-full h-9 xs:h-10">
-                  <TabsTrigger value="all" className="text-xs xs:text-sm tap-target">All</TabsTrigger>
-                  <TabsTrigger value="Twitter/X" className="text-xs xs:text-sm tap-target">Twitter</TabsTrigger>
-                  <TabsTrigger value="Telegram" className="text-xs xs:text-sm tap-target">Telegram</TabsTrigger>
-                  <TabsTrigger value="News Portal" className="text-xs xs:text-sm tap-target">News</TabsTrigger>
-                  <TabsTrigger value="Reddit" className="text-xs xs:text-sm tap-target">Reddit</TabsTrigger>
-                  <TabsTrigger value="WhatsApp" className="text-xs xs:text-sm tap-target">WhatsApp</TabsTrigger>
-                  <TabsTrigger value="YouTube" className="text-xs xs:text-sm tap-target">YouTube</TabsTrigger>
-                </TabsList>
+                <div className="w-full overflow-x-auto scrollbar-hide">
+                  <TabsList className="flex w-max min-w-full md:grid md:grid-cols-7 md:w-full h-9 xs:h-10 gap-1 md:gap-0">
+                    <TabsTrigger value="all" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 md:px-2">All</TabsTrigger>
+                    <TabsTrigger value="Twitter/X" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 md:px-2">Twitter</TabsTrigger>
+                    <TabsTrigger value="Telegram" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 md:px-2">Telegram</TabsTrigger>
+                    <TabsTrigger value="News Portal" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 md:px-2">News</TabsTrigger>
+                    <TabsTrigger value="Reddit" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 md:px-2">Reddit</TabsTrigger>
+                    <TabsTrigger value="WhatsApp" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 md:px-2">WhatsApp</TabsTrigger>
+                    <TabsTrigger value="YouTube" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 md:px-2">YouTube</TabsTrigger>
+                  </TabsList>
+                </div>
               </Tabs>
             </div>
           </div>

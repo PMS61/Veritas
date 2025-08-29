@@ -148,9 +148,9 @@ export function AnalyticsReporting() {
   }
 
   return (
-    <div className="space-y-3 xs:space-y-4 sm:space-y-6 safe-area-top safe-area-bottom pb-4">
+    <div className="space-y-3 xs:space-y-4 sm:space-y-6 safe-area-top safe-area-bottom pb-4 flex flex-col min-h-0 flex-1">
       {/* Header */}
-      <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 items-start xs:items-center justify-between">
+      <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 items-start xs:items-center justify-between py-6 sm:py-8 md:py-10">
         <div>
           <h1 className="text-xl xs:text-2xl font-bold text-foreground flex items-center gap-2">
             <BarChart3 className="w-5 h-5 xs:w-6 xs:h-6 text-primary" />
@@ -247,9 +247,9 @@ export function AnalyticsReporting() {
       </div>
 
       {/* Main Analytics Tabs */}
-      <Tabs defaultValue="trends" className="space-y-3 xs:space-y-4 sm:space-y-6">
-        <div className="overflow-x-auto">
-          <TabsList className="grid min-w-[450px] w-full grid-cols-4 h-9 xs:h-10">
+      <Tabs defaultValue="trends" className="space-y-3 xs:space-y-4 sm:space-y-6 flex-1 min-h-0">
+        <div className="overflow-x-auto w-full">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="trends" className="text-xs xs:text-sm tap-target">Trend Analysis</TabsTrigger>
             <TabsTrigger value="sources" className="text-xs xs:text-sm tap-target">Source Analytics</TabsTrigger>
             <TabsTrigger value="geographic" className="text-xs xs:text-sm tap-target">Geographic Data</TabsTrigger>

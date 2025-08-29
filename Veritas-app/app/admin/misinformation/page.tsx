@@ -366,51 +366,42 @@ export default function MisinformationModerationPage() {
   const executeBulkAction = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/admin/misinformation/bulk", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          postIds: selectedPosts,
-          action: bulkAction,
-          moderatorNotes,
-        }),
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Update local state
+      let updatedPosts = [...posts];
+      selectedPosts.forEach((postId) => {
+        const postIndex = updatedPosts.findIndex((p) => p.id === postId);
+        if (postIndex !== -1) {
+          switch (bulkAction) {
+            case "approve":
+              updatedPosts[postIndex].status = "approved";
+              break;
+            case "reject":
+              updatedPosts[postIndex].status = "rejected";
+              break;
+            case "escalate":
+              updatedPosts[postIndex].status = "escalated";
+              break;
+            case "delete":
+              updatedPosts = updatedPosts.filter((p) => p.id !== postId);
+              break;
+          }
+          if (moderatorNotes) {
+            updatedPosts[postIndex] = {
+              ...updatedPosts[postIndex],
+              moderatorNotes,
+            };
+          }
+        }
       });
 
-      if (response.ok) {
-        // Update local state
-        let updatedPosts = [...posts];
-        selectedPosts.forEach((postId) => {
-          const postIndex = updatedPosts.findIndex((p) => p.id === postId);
-          if (postIndex !== -1) {
-            switch (bulkAction) {
-              case "approve":
-                updatedPosts[postIndex].status = "approved";
-                break;
-              case "reject":
-                updatedPosts[postIndex].status = "rejected";
-                break;
-              case "escalate":
-                updatedPosts[postIndex].status = "escalated";
-                break;
-              case "delete":
-                updatedPosts = updatedPosts.filter((p) => p.id !== postId);
-                break;
-            }
-            if (moderatorNotes) {
-              updatedPosts[postIndex] = {
-                ...updatedPosts[postIndex],
-                moderatorNotes,
-              };
-            }
-          }
-        });
-
-        setPosts(updatedPosts);
-        setSelectedPosts([]);
-        setBulkActionDialog(false);
-        setModeratorNotes("");
-        console.log(`Bulk ${bulkAction} completed successfully`);
-      }
+      setPosts(updatedPosts);
+      setSelectedPosts([]);
+      setBulkActionDialog(false);
+      setModeratorNotes("");
+      console.log(`Bulk ${bulkAction} completed successfully`);
     } catch (error) {
       console.error(`Error executing bulk ${bulkAction}:`, error);
     }
@@ -424,39 +415,34 @@ export default function MisinformationModerationPage() {
   ) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/admin/misinformation/${postId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, moderatorNotes: notes }),
+      // Simulate API call for static export
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const updatedPosts = posts.map((post) => {
+        if (post.id === postId) {
+          let newStatus: MisinformationPost["status"] = post.status;
+          switch (action) {
+            case "approve":
+              newStatus = "approved";
+              break;
+            case "reject":
+              newStatus = "rejected";
+              break;
+            case "escalate":
+              newStatus = "escalated";
+              break;
+          }
+          return {
+            ...post,
+            status: newStatus,
+            moderatorNotes: notes || post.moderatorNotes,
+          };
+        }
+        return post;
       });
 
-      if (response.ok) {
-        const updatedPosts = posts.map((post) => {
-          if (post.id === postId) {
-            let newStatus: MisinformationPost["status"] = post.status;
-            switch (action) {
-              case "approve":
-                newStatus = "approved";
-                break;
-              case "reject":
-                newStatus = "rejected";
-                break;
-              case "escalate":
-                newStatus = "escalated";
-                break;
-            }
-            return {
-              ...post,
-              status: newStatus,
-              moderatorNotes: notes || post.moderatorNotes,
-            };
-          }
-          return post;
-        });
-
-        setPosts(updatedPosts);
-        console.log(`Post ${action} completed successfully`);
-      }
+      setPosts(updatedPosts);
+      console.log(`Post ${action} completed successfully`);
     } catch (error) {
       console.error(`Error executing ${action} on post:`, error);
     }
@@ -470,21 +456,22 @@ export default function MisinformationModerationPage() {
 
   const exportModerationData = async () => {
     try {
-      const response = await fetch("/api/admin/misinformation/export", {
-        method: "GET",
-      });
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `moderation-report-${new Date().toISOString().split("T")[0]}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }
+      // Simulate export for static export - create CSV data from current posts
+      const csvHeaders = "id,content,author,source,status,verificationScore,submittedAt,moderatorNotes\n";
+      const csvData = posts.map(post => 
+        `${post.id},"${post.content.replace(/"/g, '""')}",${post.author.name},${post.source},${post.status},${post.verificationScore},${post.submittedAt},"${(post.moderatorNotes || '').replace(/"/g, '""')}"`
+      ).join('\n');
+      const fullCsv = csvHeaders + csvData;
+      
+      const blob = new Blob([fullCsv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `moderation-report-${new Date().toISOString().split("T")[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error exporting moderation data:", error);
     }

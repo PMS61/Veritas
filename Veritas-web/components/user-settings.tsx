@@ -105,7 +105,7 @@ export function UserSettings() {
       {/* Main Settings Tabs */}
       <Tabs defaultValue="profile" className="space-y-3 xs:space-y-4 sm:space-y-6">
         <div className="overflow-x-auto">
-          <TabsList className="grid min-w-[450px] w-full grid-cols-4 h-9 xs:h-10">
+          <TabsList className="grid min-w-[450px] w-full grid-cols-4 ">
             <TabsTrigger value="profile" className="text-xs xs:text-sm tap-target">User Profile</TabsTrigger>
             <TabsTrigger value="security" className="text-xs xs:text-sm tap-target">Security</TabsTrigger>
             <TabsTrigger value="notifications" className="text-xs xs:text-sm tap-target">Notifications</TabsTrigger>

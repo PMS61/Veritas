@@ -230,9 +230,9 @@ export function MonitoringFeeds() {
   }
 
   return (
-    <div className="space-y-3 xs:space-y-4 sm:space-y-6 safe-area-top safe-area-bottom pb-4">
+    <div className="space-y-3 xs:space-y-4 sm:space-y-6 safe-area-top safe-area-bottom pb-4 flex flex-col min-h-0 flex-1">
       {/* Header Controls */}
-      <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 items-start xs:items-center justify-between">
+      <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 items-start xs:items-center justify-between py-6 sm:py-8 md:py-10">
         <div>
           <h1 className="text-xl xs:text-2xl font-bold text-foreground flex items-center gap-2">
             <Activity className="w-5 h-5 xs:w-6 xs:h-6 text-primary" />
@@ -299,9 +299,9 @@ export function MonitoringFeeds() {
                 />
               </div>
             </div>
-            <div className="overflow-auto w-full">
-              <Tabs value={selectedSource} onValueChange={setSelectedSource} className="w-full">
-                <TabsList className="grid min-w-[600px] md:min-w-0 grid-cols-7 w-full h-9 xs:h-10">
+            <div className="overflow-x-auto w-full">
+              <Tabs value={selectedSource} onValueChange={setSelectedSource} className="w-full flex-1 min-h-0">
+                <TabsList className="grid w-full grid-cols-7 ">
                   <TabsTrigger value="all" className="text-xs xs:text-sm tap-target">All</TabsTrigger>
                   <TabsTrigger value="Twitter/X" className="text-xs xs:text-sm tap-target">Twitter</TabsTrigger>
                   <TabsTrigger value="Telegram" className="text-xs xs:text-sm tap-target">Telegram</TabsTrigger>

@@ -373,7 +373,7 @@ export function DashboardOverview() {
       {/* Quick Actions */}
       <div className="mobile-container space-y-3 xs:space-y-4">
         <h2 className="text-xl xs:text-2xl font-bold">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 xs:gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
           {quickActions.map((action) => (
             <Card
               key={action.id}
@@ -455,7 +455,7 @@ export function DashboardOverview() {
         </div>
         <Card className="bg-card shadow-sm overflow-hidden">
           <div className="overflow-x-auto scrollbar-hide">
-            <table className="w-full min-w-[600px]">
+            <table className="w-full min-w-[600px] sm:min-w-full">
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-3 text-xs xs:text-sm font-medium text-muted-foreground">Type</th>

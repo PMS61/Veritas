@@ -1,53 +1,37 @@
 "use client"
 
 import type React from "react"
-
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { useAuth } from "@/components/auth-provider"
-import { Card, CardContent } from "@/components/ui/card"
-import { Shield, Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 interface ProtectedRouteProps {
   children: React.ReactNode
   requireAdmin?: boolean
-  redirectTo?: string
 }
 
-export function ProtectedRoute({ children, requireAdmin = false, redirectTo = "/login" }: ProtectedRouteProps) {
+export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth()
   const router = useRouter()
-  const [isChecking, setIsChecking] = useState(true)
 
   useEffect(() => {
     if (!isLoading) {
       if (!user) {
-        router.push(redirectTo)
+        router.push("/login")
         return
       }
-
+      
       if (requireAdmin && user.role !== "admin") {
         router.push("/login")
         return
       }
-
-      setIsChecking(false)
     }
-  }, [user, isLoading, requireAdmin, router, redirectTo])
+  }, [user, isLoading, router, requireAdmin])
 
-  if (isLoading || isChecking) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Card className="w-full max-w-md">
-          <CardContent className="p-8 text-center">
-            <Shield className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Verifying Access</h2>
-            <div className="flex items-center justify-center gap-2 text-muted-foreground">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Checking authentication...</span>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     )
   }

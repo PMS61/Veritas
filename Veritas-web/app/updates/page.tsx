@@ -188,9 +188,9 @@ export default function UpdatesPage() {
 
   return (
     <PublicLayout>
-      <div className="mobile-container py-8 md:py-10 mobile-spacing-y safe-area-top">
+      <div className="mobile-container mobile-spacing-y safe-area-top flex flex-col min-h-0 flex-1">
         {/* Header */}
-        <div className="text-center space-y-4 md:space-y-6">
+        <div className="text-center space-y-4 md:space-y-6 py-8 md:py-10">
           <div className="flex items-center justify-center gap-3 md:gap-4 mb-4 md:mb-6">
             <Eye className="w-10 h-10 md:w-12 md:h-12 text-primary flex-shrink-0" />
             <div>
@@ -235,7 +235,7 @@ export default function UpdatesPage() {
           </CardContent>
         </Card>
 
-        <Tabs defaultValue="verifications" className="mobile-spacing-y">
+        <Tabs defaultValue="verifications" className="mobile-spacing-y flex-1 min-h-0">
           <TabsList className="grid w-full grid-cols-2 h-12 md:h-14">
             <TabsTrigger
               value="verifications"

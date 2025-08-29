@@ -13,12 +13,12 @@ import {
   Brain,
   CheckCircle,
   Clock,
-  Eye,
   Filter,
   Globe,
   MessageSquare,
   Search,
   Shield,
+  Eye,
   TrendingUp,
   Users,
   XCircle,
@@ -340,32 +340,28 @@ export function MisinformationDetection() {
                 />
               </div>
             </div>
-            <div className="overflow-auto w-full space-y-3 xs:space-y-4">
-              <div className="overflow-x-auto w-full">
-                <div className="min-w-[600px]">
-                  <Tabs value={selectedSeverity} onValueChange={setSelectedSeverity} className="w-full">
-                    <TabsList className="w-full h-9 xs:h-10">
-                      <TabsTrigger value="all" className="text-xs xs:text-sm tap-target">All Severity</TabsTrigger>
-                      <TabsTrigger value="critical" className="text-xs xs:text-sm tap-target">Critical</TabsTrigger>
-                      <TabsTrigger value="high" className="text-xs xs:text-sm tap-target">High</TabsTrigger>
-                      <TabsTrigger value="medium" className="text-xs xs:text-sm tap-target">Medium</TabsTrigger>
-                      <TabsTrigger value="low" className="text-xs xs:text-sm tap-target">Low</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </div>
+            <div className="w-full space-y-3 xs:space-y-4">
+              <div className="w-full overflow-x-auto scrollbar-hide">
+                <Tabs value={selectedSeverity} onValueChange={setSelectedSeverity} className="w-full">
+                  <TabsList className="flex w-max min-w-full sm:grid sm:grid-cols-5 sm:w-full h-9 xs:h-10 gap-1 sm:gap-0">
+                    <TabsTrigger value="all" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">All Severity</TabsTrigger>
+                    <TabsTrigger value="critical" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Critical</TabsTrigger>
+                    <TabsTrigger value="high" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">High</TabsTrigger>
+                    <TabsTrigger value="medium" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Medium</TabsTrigger>
+                    <TabsTrigger value="low" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Low</TabsTrigger>
+                  </TabsList>
+                </Tabs>
               </div>
               
-              <div className="overflow-x-auto w-full">
-                <div className="min-w-[500px]">
-                  <Tabs value={selectedStatus} onValueChange={setSelectedStatus} className="w-full">
-                    <TabsList className="w-full h-9 xs:h-10">
-                      <TabsTrigger value="all" className="text-xs xs:text-sm tap-target">All Status</TabsTrigger>
-                      <TabsTrigger value="verified-false" className="text-xs xs:text-sm tap-target">False</TabsTrigger>
-                      <TabsTrigger value="misleading" className="text-xs xs:text-sm tap-target">Misleading</TabsTrigger>
-                      <TabsTrigger value="unverified" className="text-xs xs:text-sm tap-target">Unverified</TabsTrigger>
-                    </TabsList>
-                  </Tabs>
-                </div>
+              <div className="w-full overflow-x-auto scrollbar-hide">
+                <Tabs value={selectedStatus} onValueChange={setSelectedStatus} className="w-full">
+                  <TabsList className="flex w-max min-w-full sm:grid sm:grid-cols-4 sm:w-full h-9 xs:h-10 gap-1 sm:gap-0">
+                    <TabsTrigger value="all" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">All Status</TabsTrigger>
+                    <TabsTrigger value="verified-false" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">False</TabsTrigger>
+                    <TabsTrigger value="misleading" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Misleading</TabsTrigger>
+                    <TabsTrigger value="unverified" className="text-xs xs:text-sm tap-target whitespace-nowrap px-3 sm:px-2">Unverified</TabsTrigger>
+                  </TabsList>
+                </Tabs>
               </div>
             </div>
           </div>

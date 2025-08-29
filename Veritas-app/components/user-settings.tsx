@@ -9,11 +9,12 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, User, Shield, Bell, Users, Save, Eye, EyeOff, Mail, Phone, Lock } from "lucide-react"
+import { Settings, User, Shield, Bell, Users, Save, Eye, EyeOff, Mail, Phone, Lock, ChevronDown } from "lucide-react"
 import { useIsMobile } from "@/hooks/use-mobile"
 
 export function UserSettings() {
   const [showPassword, setShowPassword] = useState(false)
+  const [activeTab, setActiveTab] = useState("profile")
   const [notifications, setNotifications] = useState({
     email: true,
     sms: false,
@@ -82,36 +83,96 @@ export function UserSettings() {
   ]
 
   return (
-    <div className="space-y-3 xs:space-y-4 sm:space-y-6 safe-area-top safe-area-bottom pb-4">
-      {/* Header */}
-      <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 items-start xs:items-center justify-between">
-        <div>
-          <h1 className="text-xl xs:text-2xl font-bold text-foreground flex items-center gap-2">
-            <Settings className="w-5 h-5 xs:w-6 xs:h-6 text-primary" />
-            Settings & User Management
-          </h1>
-          <p className="text-xs xs:text-sm text-muted-foreground">Manage user accounts, permissions, and system settings</p>
-        </div>
-
-        <div className="flex items-center gap-2 w-full xs:w-auto">
-          <Badge className="bg-green-500 text-white text-xs">System Operational</Badge>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Shield className="w-3 h-3 xs:w-4 xs:h-4 text-primary" />
-            <span>Secure Session</span>
+    <div className="w-full max-w-full overflow-hidden">
+      <div className="space-y-3 xs:space-y-4 sm:space-y-6 safe-area-top safe-area-bottom pb-4">
+        {/* Header */}
+        <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 items-start xs:items-center justify-between">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl xs:text-2xl font-bold text-foreground flex items-center gap-2">
+              <Settings className="w-5 h-5 xs:w-6 xs:h-6 text-primary flex-shrink-0" />
+              <span className="truncate">Settings & User Management</span>
+            </h1>
+            <p className="text-xs xs:text-sm text-muted-foreground">Manage user accounts, permissions, and system settings</p>
           </div>
-        </div>
-      </div>
 
-      {/* Main Settings Tabs */}
-      <Tabs defaultValue="profile" className="space-y-3 xs:space-y-4 sm:space-y-6">
-        <div className="overflow-x-auto">
-          <TabsList className="grid min-w-[450px] w-full grid-cols-4 h-9 xs:h-10">
-            <TabsTrigger value="profile" className="text-xs xs:text-sm tap-target">User Profile</TabsTrigger>
-            <TabsTrigger value="security" className="text-xs xs:text-sm tap-target">Security</TabsTrigger>
-            <TabsTrigger value="notifications" className="text-xs xs:text-sm tap-target">Notifications</TabsTrigger>
-            <TabsTrigger value="team" className="text-xs xs:text-sm tap-target">Team</TabsTrigger>
-          </TabsList>
-        </div>
+          <div className="flex items-center gap-2 w-full xs:w-auto flex-shrink-0">
+            <Badge className="bg-green-500 text-white text-xs">System Operational</Badge>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Shield className="w-3 h-3 xs:w-4 xs:h-4 text-primary" />
+              <span>Secure Session</span>
+            </div>
+          </div>
+        </div>        {/* Main Settings Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3 xs:space-y-4 sm:space-y-6">
+          {/* Mobile Dropdown for very small screens */}
+          <div className="block xs:hidden">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full h-10 text-sm">
+                <SelectValue>
+                  {activeTab === "profile" && "Profile"}
+                  {activeTab === "security" && "Security"}
+                  {activeTab === "notifications" && "Notifications"}
+                  {activeTab === "team" && "Team"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="profile">Profile</SelectItem>
+                <SelectItem value="security">Security</SelectItem>
+                <SelectItem value="notifications">Notifications</SelectItem>
+                <SelectItem value="team">Team</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Tabs for larger screens */}
+          <div className="hidden xs:block w-full">
+            <div className="border-b border-border">
+              <TabsList className="h-auto bg-transparent p-0 w-full justify-start overflow-x-auto scrollbar-hide">
+                <div className="flex space-x-1 min-w-max">
+                  <TabsTrigger 
+                    value="profile" 
+                    className="px-4 sm:px-6 py-3 text-sm font-medium transition-all tap-target whitespace-nowrap
+                             border-b-2 border-transparent rounded-t-lg rounded-b-none
+                             hover:bg-muted/50 hover:text-foreground
+                             data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-none
+                             data-[state=inactive]:text-muted-foreground"
+                  >
+                    Profile
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="security" 
+                    className="px-4 sm:px-6 py-3 text-sm font-medium transition-all tap-target whitespace-nowrap
+                             border-b-2 border-transparent rounded-t-lg rounded-b-none
+                             hover:bg-muted/50 hover:text-foreground
+                             data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-none
+                             data-[state=inactive]:text-muted-foreground"
+                  >
+                    Security
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="notifications" 
+                    className="px-4 sm:px-6 py-3 text-sm font-medium transition-all tap-target whitespace-nowrap
+                             border-b-2 border-transparent rounded-t-lg rounded-b-none
+                             hover:bg-muted/50 hover:text-foreground
+                             data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-none
+                             data-[state=inactive]:text-muted-foreground"
+                  >
+                    Notifications
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="team" 
+                    className="px-4 sm:px-6 py-3 text-sm font-medium transition-all tap-target whitespace-nowrap
+                             border-b-2 border-transparent rounded-t-lg rounded-b-none
+                             hover:bg-muted/50 hover:text-foreground
+                             data-[state=active]:border-primary data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-none
+                             data-[state=inactive]:text-muted-foreground"
+                  >
+                    Team
+                  </TabsTrigger>
+                </div>
+              </TabsList>
+            </div>
+          </div>
 
         <TabsContent value="profile" className="space-y-3 xs:space-y-4 sm:space-y-6 mt-0">
           {/* User Profile */}
@@ -124,7 +185,7 @@ export function UserSettings() {
               <CardDescription className="text-xs xs:text-sm">Manage your personal information and preferences</CardDescription>
             </CardHeader>
             <CardContent className="px-3 xs:px-4 pb-3 xs:pb-4 space-y-3 xs:space-y-4">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 xs:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                 <div className="space-y-1 xs:space-y-2">
                   <Label htmlFor="name" className="text-xs xs:text-sm">Full Name</Label>
                   <Input
@@ -222,7 +283,7 @@ export function UserSettings() {
               {/* Password Change */}
               <div className="space-y-4">
                 <h3 className="text-sm xs:text-lg font-semibold text-card-foreground">Change Password</h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 xs:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                   <div className="space-y-1 xs:space-y-2">
                     <Label htmlFor="current-password" className="text-xs xs:text-sm">Current Password</Label>
                     <div className="relative">
@@ -275,7 +336,7 @@ export function UserSettings() {
               {/* Session Management */}
               <div className="space-y-4 pt-6 border-t border-border">
                 <h3 className="text-sm xs:text-lg font-semibold text-card-foreground">Session Management</h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 xs:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                   <div className="space-y-1 xs:space-y-2">
                     <Label htmlFor="session-timeout" className="text-xs xs:text-sm">Session Timeout</Label>
                     <Select
@@ -373,7 +434,7 @@ export function UserSettings() {
               {/* Alert Preferences */}
               <div className="space-y-4 pt-6 border-t border-border">
                 <h3 className="text-sm xs:text-lg font-semibold text-card-foreground">Alert Preferences</h3>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 xs:gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                   <div className="space-y-1 xs:space-y-2">
                     <Label htmlFor="alert-frequency" className="text-xs xs:text-sm">Alert Frequency</Label>
                     <Select defaultValue="immediate">
@@ -423,21 +484,21 @@ export function UserSettings() {
                 {teamMembers.map((member) => (
                   <div
                     key={member.id}
-                    className="flex items-center justify-between p-3 xs:p-4 rounded-lg bg-muted/50 border border-border"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between p-3 xs:p-4 rounded-lg bg-muted/50 border border-border gap-3 sm:gap-0"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 xs:w-10 xs:h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className="w-8 h-8 xs:w-10 xs:h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                         <User className="w-4 h-4 xs:w-5 xs:h-5 text-primary" />
                       </div>
-                      <div>
-                        <p className="font-medium text-card-foreground text-sm xs:text-base">{member.name}</p>
-                        <p className="text-xs xs:text-sm text-muted-foreground">{member.email}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-card-foreground text-sm xs:text-base truncate">{member.name}</p>
+                        <p className="text-xs xs:text-sm text-muted-foreground truncate">{member.email}</p>
                         <p className="text-xs text-muted-foreground">
                           Last active: {new Date(member.lastActive).toLocaleString()}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                       <Badge variant="outline" className="text-xs xs:text-sm">{member.role}</Badge>
                       <Badge
                         className={member.status === "active" ? "bg-green-500 text-white text-xs xs:text-sm" : "bg-gray-500 text-white text-xs xs:text-sm"}
@@ -462,6 +523,7 @@ export function UserSettings() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   )
 }
