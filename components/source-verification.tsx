@@ -208,28 +208,9 @@ export function SourceVerification() {
       ),
     );
 
-    // Make API call to process the verification action
-    try {
-      const response = await fetch("/api/admin/verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          claimId: selectedClaim.id,
-          action: actionType,
-          notes: adminNotes,
-          timestamp: new Date().toISOString(),
-        }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log(`Verification action completed:`, result);
-      } else {
-        console.error("Failed to process verification action");
-      }
-    } catch (error) {
-      console.error("Error processing verification action:", error);
-    }
+    // TODO: Connect to backend API when available
+    console.log(`Verification action: ${actionType} for claim ${selectedClaim.id}`);
+    console.log(`Admin notes: ${adminNotes}`);
 
     // Reset state
     setActionDialog(false);
