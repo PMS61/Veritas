@@ -89,7 +89,6 @@ Each feature belongs to ONE technology stack. Database: **Supabase (PostgreSQL)*
   - Store user reports in queue
   - Basic validation
   - Generate report reference ID
-  - Send confirmation email via Supabase functions
   - Store report metadata
 - **Why Next.js**:
   - Direct database writes via Supabase RLS

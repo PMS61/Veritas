@@ -267,7 +267,6 @@ export function UserSettings() {
                     onCheckedChange={(checked) =>
                       setSecuritySettings({ ...securitySettings, twoFactorEnabled: checked })
                     }
-                    className="tap-target"
                   />
                 </div>
               </div>
@@ -301,7 +300,6 @@ export function UserSettings() {
                     <Switch
                       checked={securitySettings.ipWhitelist}
                       onCheckedChange={(checked) => setSecuritySettings({ ...securitySettings, ipWhitelist: checked })}
-                      className="tap-target"
                     />
                   </div>
                 </div>
@@ -336,7 +334,6 @@ export function UserSettings() {
                     <Switch
                       checked={notifications.email}
                       onCheckedChange={(checked) => setNotifications({ ...notifications, email: checked })}
-                      className="tap-target"
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -350,7 +347,6 @@ export function UserSettings() {
                     <Switch
                       checked={notifications.sms}
                       onCheckedChange={(checked) => setNotifications({ ...notifications, sms: checked })}
-                      className="tap-target"
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -364,7 +360,6 @@ export function UserSettings() {
                     <Switch
                       checked={notifications.push}
                       onCheckedChange={(checked) => setNotifications({ ...notifications, push: checked })}
-                      className="tap-target"
                     />
                   </div>
                 </div>
