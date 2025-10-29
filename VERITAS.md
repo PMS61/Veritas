@@ -220,74 +220,8 @@ flowchart TD
 ```
 
 #### System Architecture & Data Flow
+![System Architecture](./public/architecture.jpeg)
 
-```mermaid
-flowchart TD
-    A[User Interface Layer] --> B[Authentication Layer]
-    B --> C[Protected Routes]
-    C --> D[Admin Routes]
-    C --> E[Public Routes]
-    
-    D --> F[Admin Dashboard]
-    D --> G[Verification Management]
-    D --> H[Analytics Dashboard]
-    D --> I[System Monitoring]
-    
-    E --> J[Public Dashboard]
-    E --> K[Verify Page]
-    E --> L[Report Page]
-    E --> M[Help/Contact Pages]
-    
-    F --> N[API Layer]
-    G --> N
-    H --> N
-    I --> N
-    J --> N
-    K --> N
-    L --> N
-    
-    N --> O[Admin API Routes]
-    N --> P[Public API Routes]
-    
-    O --> Q[/api/admin/verification]
-    O --> R[/api/admin/alerts]
-    O --> S[/api/admin/emergency]
-    
-    P --> T[Verification Processing]
-    P --> U[Report Submission]
-    P --> V[Public Data Access]
-    
-    Q --> W[Verification Database]
-    R --> X[Alert System]
-    S --> Y[Emergency Management]
-    
-    T --> Z[AI Processing Engine]
-    U --> AA[Report Queue]
-    V --> BB[Public Database]
-    
-    Z --> CC[Source Analysis]
-    Z --> DD[Credibility Assessment]
-    Z --> EE[Confidence Scoring]
-    
-    AA --> FF[Admin Review Queue]
-    FF --> GG[Manual Verification]
-    GG --> HH[Status Updates]
-    
-    W --> II[Database Updates]
-    X --> JJ[Notification System]
-    Y --> KK[Emergency Alerts]
-    
-    II --> LL[Public Dashboard Updates]
-    JJ --> MM[User Notifications]
-    KK --> NN[Emergency Broadcasts]
-    
-    LL --> OO[Real-time Updates]
-    MM --> OO
-    NN --> OO
-    
-    OO --> PP[User Interface Updates]
-    PP --> A
-```
 
 ### The Problem it solves
 
