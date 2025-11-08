@@ -57,7 +57,7 @@ export default function RegisterPage() {
             email,
             firstName,
             lastName,
-            role: "public" as const,
+            role: "user" as const,
           }
           console.log("Registering user:", userData)
           login(userData)

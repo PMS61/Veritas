@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PublicLayout } from "@/components/public-layout";
+import { DashboardLayout } from "@/components/dashboard-layout";
 import {
   Card,
   CardContent,
@@ -135,6 +135,32 @@ export default function UpdatesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCredibility, setSelectedCredibility] = useState("all");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleSubscribeAlerts = async () => {
+    setIsSubscribing(true);
+    
+    try {
+      // Integration point: Call backend API to subscribe to alerts
+      // import { api } from '@/lib/api/client';
+      // const result = await api.alerts.subscribeToAlerts({
+      //   categories: selectedCategory === 'all' ? [] : [selectedCategory],
+      //   severity: ['high', 'critical'],
+      //   channels: ['email', 'push']
+      // });
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      console.log('Subscribed to verification alerts');
+      // Show success notification
+    } catch (error) {
+      console.error('Subscription failed:', error);
+      // Handle error - show error notification
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   const getCredibilityBadge = (credibility: string) => {
     const colors = {
@@ -187,7 +213,7 @@ export default function UpdatesPage() {
   });
 
   return (
-    <PublicLayout>
+    <DashboardLayout>
       <div className="mobile-container mobile-spacing-y safe-area-top flex flex-col min-h-0 flex-1">
         {/* Header */}
         <div className="text-center space-y-4 md:space-y-6 py-8 md:py-10">
@@ -227,9 +253,15 @@ export default function UpdatesPage() {
                 variant="outline"
                 size="sm"
                 className="shrink-0 text-sm md:text-base h-10 md:h-11 tap-target font-medium"
+                onClick={handleSubscribeAlerts}
+                disabled={isSubscribing}
               >
                 <Bell className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Get </span>Alerts
+                {isSubscribing ? 'Subscribing...' : (
+                  <>
+                    <span className="hidden sm:inline">Get </span>Alerts
+                  </>
+                )}
               </Button>
             </div>
           </CardContent>
@@ -517,6 +549,6 @@ export default function UpdatesPage() {
           </CardContent>
         </Card>
       </div>
-    </PublicLayout>
+    </DashboardLayout>
   );
 }

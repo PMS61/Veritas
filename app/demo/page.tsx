@@ -27,12 +27,7 @@ export default function DemoPage() {
         <h2 className="font-medium">Auth</h2>
         <p className="text-sm text-muted-foreground mb-2">Current user: {user ? user.email + ` (${user.role})` : "guest"}</p>
         <div className="flex gap-2">
-          <button
-            className="btn"
-            onClick={() => login({ email: "demo@veritas.test", firstName: "Demo", role: "admin" })}
-          >
-            Login as demo admin
-          </button>
+
           <button className="btn" onClick={() => logout()}>
             Logout
           </button>
@@ -58,9 +53,7 @@ export default function DemoPage() {
       <section>
         <h2 className="font-medium">Quick tour</h2>
         <ol className="list-decimal list-inside">
-          <li>Login as demo admin.</li>
           <li>Open Dashboard & explore alerts and sources.</li>
-          <li>Visit Admin → Sources to configure sources.</li>
         </ol>
       </section>
     </div>

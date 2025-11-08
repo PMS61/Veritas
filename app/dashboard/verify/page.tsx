@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { PublicLayout } from "@/components/public-layout"
+import { DashboardLayout } from "@/components/dashboard-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -69,8 +69,14 @@ export default function VerifyPage() {
 
     setIsVerifying(true)
 
-    // Simulate verification process
-    setTimeout(() => {
+    try {
+      // Integration point: Call backend API for claim verification
+      // import { api } from '@/lib/api/client';
+      // const result = await api.verification.submitClaim({ claim: verificationInput });
+      
+      // Simulate API call for now
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       setVerificationResult({
         claim: verificationInput,
         status: "verified",
@@ -82,9 +88,21 @@ export default function VerifyPage() {
           "Follow verified news sources",
           "Be cautious of unverified social media posts",
         ],
-      })
-      setIsVerifying(false)
-    }, 2000)
+      });
+    } catch (error) {
+      console.error('Verification failed:', error);
+      // Handle error - show error message to user
+      setVerificationResult({
+        claim: verificationInput,
+        status: "error",
+        confidence: 0,
+        sources: 0,
+        details: "An error occurred while verifying this claim. Please try again.",
+        recommendations: [],
+      });
+    } finally {
+      setIsVerifying(false);
+    }
   }
 
   const getStatusIcon = (status: string) => {
@@ -121,7 +139,7 @@ export default function VerifyPage() {
   }
 
   return (
-    <PublicLayout>
+    <DashboardLayout>
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
@@ -326,6 +344,6 @@ export default function VerifyPage() {
           </TabsContent>
         </Tabs>
       </div>
-    </PublicLayout>
+    </DashboardLayout>
   )
 }

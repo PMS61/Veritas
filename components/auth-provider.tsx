@@ -8,7 +8,7 @@ interface User {
   email: string
   firstName?: string
   lastName?: string
-  role: "public" | "admin"
+  role: "moderator" | "user" | "guest"
 }
 
 interface AuthContextType {

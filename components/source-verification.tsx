@@ -145,7 +145,7 @@ export function SourceVerification() {
   const [actionType, setActionType] = useState<
     "approve" | "reject" | "flag" | null
   >(null);
-  const [adminNotes, setAdminNotes] = useState("");
+  const [actionNotes, setActionNotes] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
 
@@ -197,26 +197,33 @@ export function SourceVerification() {
     if (!selectedClaim || !actionType) return;
 
     // Update claim status
-    setClaims((prev) =>
-      prev.map((claim) =>
-        claim.id === selectedClaim.id
-          ? {
-              ...claim,
-              flagged: actionType === "flag" ? true : claim.flagged,
-            }
-          : claim,
-      ),
-    );
-
-    // TODO: Connect to backend API when available
-    console.log(`Verification action: ${actionType} for claim ${selectedClaim.id}`);
-    console.log(`Admin notes: ${adminNotes}`);
+    try {
+      // Integration point: Call backend API for verification action
+      // const result = await api.verificationActions[actionType](selectedClaim.id, actionNotes);
+      console.log(`Verification action: ${actionType} for claim ${selectedClaim.id}`);
+      console.log(`Action notes: ${actionNotes}`);
+      
+      // Update local state after successful API call
+      setClaims((prev) =>
+        prev.map((claim) =>
+          claim.id === selectedClaim.id
+            ? {
+                ...claim,
+                flagged: actionType === "flag" ? true : claim.flagged,
+              }
+            : claim,
+        ),
+      );
+    } catch (error) {
+      console.error('Verification action failed:', error);
+      // Handle error - show error notification
+    }
 
     // Reset state
     setActionDialog(false);
     setSelectedClaim(null);
     setActionType(null);
-    setAdminNotes("");
+    setActionNotes("");
   };
 
   const handleEdit = (claim: PendingClaim) => {
@@ -479,11 +486,11 @@ export function SourceVerification() {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="admin-notes">Admin Notes (Required)</Label>
+              <Label htmlFor="action-notes">Action Notes (Optional)</Label>
               <Textarea
-                id="admin-notes"
-                value={adminNotes}
-                onChange={(e) => setAdminNotes(e.target.value)}
+                id="action-notes"
+                value={actionNotes}
+                onChange={(e) => setActionNotes(e.target.value)}
                 placeholder="Provide reasoning for this action..."
                 rows={3}
                 className="resize-none"
@@ -512,7 +519,6 @@ export function SourceVerification() {
             </Button>
             <Button
               onClick={executeAction}
-              disabled={!adminNotes.trim()}
               className={`w-full xs:w-auto ${
                 actionType === "approve"
                   ? "bg-green-600 hover:bg-green-700"

@@ -7,26 +7,17 @@ import { useEffect } from "react"
 
 interface ProtectedRouteProps {
   children: React.ReactNode
-  requireAdmin?: boolean
 }
 
-export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!user) {
-        router.push("/login")
-        return
-      }
-      
-      if (requireAdmin && user.role !== "admin") {
-        router.push("/login")
-        return
-      }
+    if (!isLoading && !user) {
+      router.push("/login")
     }
-  }, [user, isLoading, router, requireAdmin])
+  }, [user, isLoading, router])
 
   if (isLoading) {
     return (
@@ -36,7 +27,7 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
     )
   }
 
-  if (!user || (requireAdmin && user.role !== "admin")) {
+  if (!user) {
     return null
   }
 

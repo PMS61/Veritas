@@ -31,11 +31,10 @@ export function GettingStarted() {
       highlight: { top: 620, left: 120, width: 520, height: 220 },
     },
     {
-      title: "Explore dashboard (admin)",
-      desc: "Admins can triage alerts, manage sources and tune monitoring settings.",
-      action: { href: "/admin", label: "Open admin" },
+      title: "Explore dashboard",
+      desc: "Triage alerts, manage sources and tune monitoring settings.",
+      action: { href: "/dashboard", label: "Open dashboard" },
       highlight: { top: 120, left: 760, width: 360, height: 420 },
-      enableDevAuth: true,
     },
     {
       title: "Subscribe & monitor",
@@ -114,7 +113,7 @@ export function GettingStarted() {
         <div className="text-center mb-6">
           <h2 className="text-2xl xs:text-3xl md:text-4xl font-bold">Getting started</h2>
           <p className="text-sm xs:text-base md:text-lg text-muted-foreground max-w-3xl mx-auto">
-            Quick guides to help both general users and administrators get up and running with Veritas.
+            Quick guides to help both general users and advanced users get up and running with Veritas.
           </p>
         </div>
 
@@ -170,26 +169,26 @@ export function GettingStarted() {
             <CardHeader className="pb-2 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="h-5 w-5 text-primary" />
-                <CardTitle className="text-lg font-semibold">For administrators</CardTitle>
+                <CardTitle className="text-lg font-semibold">For advanced users</CardTitle>
               </div>
               <Button variant="ghost" size="sm" onClick={() => { setOpen(true); setStep(2); setAutoPlay(true); }} className="h-8">
-                <Play className="h-4 w-4 mr-2" /> Admin tour
+                <Play className="h-4 w-4 mr-2" /> Dashboard tour
               </Button>
             </CardHeader>
             <CardContent className="pt-2">
               <ol className="list-decimal list-inside text-sm space-y-2 text-muted-foreground">
-                <li>Login to the admin console to view system alerts and sources.</li>
+                <li>Login to view system alerts and sources.</li>
                 <li>Review and triage high-severity alerts from the dashboard.</li>
-                <li>Manage sources and verification rules in the Sources area.</li>
+                <li>Save sources and verification rules.</li>
                 <li>Adjust monitoring and notification settings to tune ingestion.</li>
               </ol>
 
               <div className="mt-4 flex gap-2">
                 <Button asChild>
-                  <Link href="/login">Admin sign in</Link>
+                  <Link href="/login">Sign in</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="/admin/sources">Open Sources</Link>
+                  <Link href="/dashboard">Open Dashboard</Link>
                 </Button>
               </div>
 
@@ -197,11 +196,11 @@ export function GettingStarted() {
                 <Collapsible>
                   <CollapsibleTrigger asChild>
                     <button className="text-sm text-primary hover:underline flex items-center gap-2">
-                      <Info className="h-4 w-4" /> Admin tips
+                      <Info className="h-4 w-4" /> Tips
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="mt-2 text-sm text-muted-foreground">
-                    Use the dashboard filters to focus on high-severity or unverified alerts. Subscribe to system metrics notifications for outages.
+                    Use the dashboard filters to focus on high-severity or unverified alerts. Subscribe to metrics notifications for insights.
                   </CollapsibleContent>
                 </Collapsible>
               </div>

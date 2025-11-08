@@ -40,11 +40,21 @@ export default function ContactPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Integration point: Call backend API for contact form submission
+      // import { api } from '@/lib/api/client';
+      // const result = await api.contact.submitContactForm(formData);
+      
+      // Simulate API call for now
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       setIsSubmitted(true);
+    } catch (error) {
+      console.error('Contact form submission failed:', error);
+      // Handle error - show error message to user
+    } finally {
       setIsSubmitting(false);
-    }, 2000);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {

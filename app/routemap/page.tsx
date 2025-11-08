@@ -36,23 +36,7 @@ export default function RouteMapPage() {
       ],
       icon: <LayoutDashboard className="w-5 h-5 text-green-500" />,
     },
-    {
-      name: "Admin Pages",
-      routes: [
-        { path: "/admin", name: "Admin Dashboard" },
-        { path: "/admin/alerts", name: "Alerts Management" },
-        { path: "/admin/analytics", name: "Analytics" },
-        { path: "/admin/misinformation", name: "Misinformation" },
-        { path: "/admin/monitoring", name: "Monitoring" },
-        { path: "/admin/settings", name: "Settings" },
-        { path: "/admin/sources", name: "Sources" },
-        { path: "/admin/system", name: "System" },
-        { path: "/admin/trends", name: "Trends" },
-        { path: "/admin/users", name: "Users" },
-        { path: "/admin/verification", name: "Verification" },
-      ],
-      icon: <Shield className="w-5 h-5 text-blue-500" />,
-    },
+
     {
       name: "Utilities",
       routes: [
@@ -127,19 +111,6 @@ app/
 ├── page.tsx (/)
 ├── about/
 │   └── page.tsx (/about)
-├── admin/
-│   ├── page.tsx (/admin)
-│   ├── alerts/
-│   │   └── page.tsx (/admin/alerts)
-│   ├── analytics/
-│   ├── misinformation/
-│   ├── monitoring/
-│   ├── settings/
-│   ├── sources/
-│   ├── system/
-│   ├── trends/
-│   ├── users/
-│   └── verification/
 ├── contact/
 │   └── page.tsx (/contact)
 ├── dashboard/

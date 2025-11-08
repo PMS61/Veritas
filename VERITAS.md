@@ -15,12 +15,6 @@ For the hackathon build, we focus on an end‑to‑end slice: live feed ingestio
 
 ### User Base
 
-#### Admin Users
-- **Fact-checkers and Journalists**: Professional fact-cheThe Veritas API: A developer-first APckers, investigative journalists, and newsroom editors who need comprehensive verification tools and source analysis capabilities
-- **Content Moderators**: Platform moderators and community managers who require misinformation detection and content flagging tools
-- **Researchers and Academics**: Academic researchers, policy analysts, and think tank professionals who need detailed verification workflows and source credibility assessment
-- **Government and NGO Personnel**: Public information officers, policy makers, and NGO staff who require verified information for decision-making and public communication
-
 #### General Users
 - **Informed Citizens**: Individuals seeking to verify news, social media claims, and public statements before sharing or acting on information
 - **Students and Educators**: Students conducting research, educators teaching media literacy, and academic institutions promoting critical thinking
@@ -28,83 +22,6 @@ For the hackathon build, we focus on an end‑to‑end slice: live feed ingestio
 - **Social Media Users**: Active social media participants who want to verify viral content before engaging or sharing
 
 ### User Process Flows
-
-#### Admin User Process Flow
-
-```mermaid
-flowchart TD
-    A[Admin Login] --> B[Protected Route Check]
-    B --> C{User Role = Admin?}
-    C -->|No| D[Redirect to Login]
-    C -->|Yes| E[Access Admin Dashboard]
-    
-    E --> F[Dashboard Overview]
-    F --> G{Select Admin Module}
-    
-    G -->|Analytics| H[Analytics Dashboard]
-    G -->|Monitoring| I[Monitoring Feeds]
-    G -->|Verification| J[Source Verification]
-    G -->|Alerts| K[Alerts Management]
-    G -->|Sources| L[Sources Configuration]
-    G -->|Users| M[User Management]
-    G -->|Settings| N[System Settings]
-    G -->|Trends| O[Trends Analysis]
-    G -->|Misinformation| P[Misinformation Detection]
-    G -->|System| Q[System Monitoring]
-    
-    H --> H1[View System Analytics]
-    H --> H2[Generate Reports]
-    H --> H3[Export Data]
-    
-    I --> I1[Monitor Real-time Feeds]
-    I --> I2[Flag Suspicious Content]
-    I --> I3[Track Information Patterns]
-    
-    J --> J1[Review Pending Claims]
-    J --> J2[AI Confidence Assessment]
-    J --> J3[Manual Verification Actions]
-    J --> J4[Approve/Reject/Flag Claims]
-    J --> J5[Update Claim Status]
-    
-    K --> K1[Configure Alert Systems]
-    K --> K2[Emergency Alerts]
-    K --> K3[Notification Rules]
-    
-    L --> L1[Manage Information Sources]
-    L --> L2[Source Credibility Settings]
-    L --> L3[API Configuration]
-    
-    M --> M1[View User Activity]
-    M --> M2[Manage Permissions]
-    M --> M3[User Reports]
-    
-    N --> N1[System Configuration]
-    N --> N2[Security Settings]
-    N --> N3[API Keys Management]
-    
-    O --> O1[Trend Analysis]
-    O --> O2[Pattern Recognition]
-    O --> O3[Predictive Insights]
-    
-    P --> P1[Misinformation Detection]
-    P --> P2[Content Flagging]
-    P --> P3[Automated Alerts]
-    
-    Q --> Q1[System Health Monitoring]
-    Q --> Q2[Performance Metrics]
-    Q --> Q3[Error Logging]
-    
-    J1 --> R[API: GET /api/admin/verification]
-    J2 --> R
-    J3 --> R
-    J4 --> S[API: POST /api/admin/verification]
-    J5 --> S
-    
-    R --> T[Update Verification Database]
-    S --> T
-    T --> U[Trigger Notifications]
-    U --> V[Update Public Dashboard]
-```
 
 #### General User Process Flow
 
@@ -142,7 +59,7 @@ flowchart TD
     I --> I4[Set Impact Level]
     I --> I5[Submit Report]
     I5 --> I6[Generate Reference ID]
-    I6 --> I7[Send to Admin Queue]
+    I6 --> I7[Send to Expert Review Queue]
     
     J --> J1[View Recent Updates]
     J --> J2[Access Public Analytics]
@@ -191,10 +108,10 @@ flowchart TD
     D -->|Low Confidence <40%| G[Flag for Investigation]
     
     E --> H[Update Verified Database]
-    F --> I[Admin Review Process]
+    F --> I[Expert Review Process]
     G --> J[Deep Investigation]
     
-    I --> K{Admin Decision}
+    I --> K{Expert Decision}
     K -->|Approve| H
     K -->|Reject| L[Mark as Misinformation]
     K -->|Flag| M[Flag for Further Review]
@@ -209,7 +126,7 @@ flowchart TD
     
     H --> R[Notify Users]
     L --> R
-    M --> S[Send to Admin Queue]
+    M --> S[Send to Expert Review Queue]
     Q --> R
     
     R --> T[Update Public Dashboard]

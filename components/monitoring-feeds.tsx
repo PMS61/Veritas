@@ -20,7 +20,7 @@ import {
   Users,
   Zap,
 } from "lucide-react"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/components/ui/use-mobile"
 
 interface FeedItem {
   id: string

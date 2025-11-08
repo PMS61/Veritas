@@ -32,8 +32,6 @@ import {
 } from "@/components/ui/select";
 import {
   AlertTriangle,
-  CheckCircle,
-  XCircle,
   Clock,
   Users,
   Flag,
@@ -43,7 +41,6 @@ import {
   Settings,
   Bell,
   MessageSquare,
-  TrendingUp,
   Database,
   FileText,
   Ban,
@@ -51,16 +48,17 @@ import {
   AlertCircle,
   Megaphone,
   MoreHorizontal,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/components/ui/use-mobile";
 
 interface QuickAction {
   id: string;
   title: string;
   description: string;
   urgency: "high" | "medium" | "low";
-  type: "verification" | "moderation" | "system";
+  type: "verification" | "moderation";
   count?: number;
 }
 
@@ -76,7 +74,7 @@ const quickActions: QuickAction[] = [
   {
     id: "pending-verifications",
     title: "Pending Verifications",
-    description: "Claims awaiting admin review and approval",
+    description: "Claims awaiting review and approval",
     urgency: "high",
     type: "verification",
     count: 12,
@@ -89,47 +87,9 @@ const quickActions: QuickAction[] = [
     type: "moderation",
     count: 8,
   },
-  {
-    id: "system-alerts",
-    title: "System Alerts",
-    description: "Critical system issues requiring attention",
-    urgency: "medium",
-    type: "system",
-    count: 3,
-  },
-  {
-    id: "source-review",
-    title: "Source Review",
-    description: "New sources submitted for verification",
-    urgency: "medium",
-    type: "verification",
-    count: 5,
-  },
 ];
 
-const systemAlerts: SystemAlert[] = [
-  {
-    id: "1",
-    type: "error",
-    message: "AI verification service experiencing high latency",
-    timestamp: "5 minutes ago",
-    actionRequired: true,
-  },
-  {
-    id: "2",
-    type: "warning",
-    message: "Source reliability scores need recalibration",
-    timestamp: "15 minutes ago",
-    actionRequired: false,
-  },
-  {
-    id: "3",
-    type: "info",
-    message: "Daily verification report generated successfully",
-    timestamp: "1 hour ago",
-    actionRequired: false,
-  },
-];
+
 
 export function DashboardOverview() {
   const [publishDialog, setPublishDialog] = useState(false);
@@ -160,22 +120,19 @@ export function DashboardOverview() {
     }
   };
 
-  const getAlertIcon = (type: string) => {
-    switch (type) {
-      case "error":
-        return <AlertCircle className="w-4 h-4 text-red-500" />;
-      case "warning":
-        return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
-      case "info":
-        return <CheckCircle className="w-4 h-4 text-blue-500" />;
-      default:
-        return <Bell className="w-4 h-4" />;
-    }
-  };
+
 
   const handlePublishAlert = async () => {
-    // TODO: Connect to backend API when available
-    console.log("Alert published:", { message: alertMessage, type: alertType });
+    try {
+      // Integration point: Call backend API to publish alert
+      // import { api } from '@/lib/api/client';
+      // const result = await api.alerts.createAlert({ message: alertMessage, type: alertType });
+      console.log("Alert published:", { message: alertMessage, type: alertType });
+      // Handle success - show toast notification
+    } catch (error) {
+      console.error('Failed to publish alert:', error);
+      // Handle error - show error notification
+    }
 
     setAlertDialog(false);
     setAlertMessage("");
@@ -190,8 +147,15 @@ export function DashboardOverview() {
   const executeQuickAction = async () => {
     if (!selectedAction) return;
 
-    // TODO: Connect to backend API when available
-    console.log(`Quick action executed: ${selectedAction.title}`);
+    try {
+      // Integration point: Call backend API for quick actions
+      // const result = await api.actions.execute(selectedAction.id);
+      console.log(`Quick action executed: ${selectedAction.title}`);
+      // Handle success
+    } catch (error) {
+      console.error('Quick action failed:', error);
+      // Handle error
+    }
 
     setQuickActionDialog(false);
     setSelectedAction(null);
@@ -205,8 +169,15 @@ export function DashboardOverview() {
   const executeEmergencyAction = async () => {
     if (!selectedEmergencyAction) return;
 
-    // TODO: Connect to backend API when available
-    console.log(`Emergency action executed: ${selectedEmergencyAction}`);
+    try {
+      // Integration point: Call backend API for emergency actions
+      // const result = await api.emergency.execute(selectedEmergencyAction);
+      console.log(`Emergency action executed: ${selectedEmergencyAction}`);
+      // Handle success
+    } catch (error) {
+      console.error('Emergency action failed:', error);
+      // Handle error
+    }
 
     setEmergencyActionDialog(false);
     setSelectedEmergencyAction(null);
@@ -218,7 +189,7 @@ export function DashboardOverview() {
       {/* Header with Quick Actions */}
       <div className="mobile-container space-y-3 xs:space-y-4 md:space-y-6">
         <div className="text-center sm:text-left">
-          <h1 className="text-2xl xs:text-3xl md:text-4xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-2xl xs:text-3xl md:text-4xl font-bold">Dashboard</h1>
           <p className="text-sm xs:text-base md:text-lg text-muted-foreground">
             Veritas truth verification control center
           </p>
@@ -342,45 +313,7 @@ export function DashboardOverview() {
         </div>
       </div>
 
-      {/* System Alerts */}
-      <div className="mobile-container space-y-3 xs:space-y-4">
-        <h2 className="text-xl xs:text-2xl font-bold">System Alerts</h2>
-        <div className="space-y-2 xs:space-y-3">
-          {systemAlerts.map((alert) => (
-            <Alert
-              key={alert.id}
-              className={`border-l-4 ${
-                alert.type === "error"
-                  ? "border-l-red-500"
-                  : alert.type === "warning"
-                  ? "border-l-yellow-500"
-                  : "border-l-blue-500"
-              } p-3 xs:p-4`}
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">{getAlertIcon(alert.type)}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start">
-                    <p className="text-sm xs:text-base font-medium">
-                      {alert.message}
-                    </p>
-                    <span className="text-xs text-muted-foreground ml-2">
-                      {alert.timestamp}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              {alert.actionRequired && (
-                <div className="flex justify-end mt-2">
-                  <Button size="sm" className="tap-target h-8 xs:h-9">
-                    Resolve
-                  </Button>
-                </div>
-              )}
-            </Alert>
-          ))}
-        </div>
-      </div>
+
 
       {/* Recent Activity */}
       <div className="mobile-container space-y-3 xs:space-y-4">
@@ -420,12 +353,12 @@ export function DashboardOverview() {
                 </tr>
                 <tr className="border-b hover:bg-muted/50">
                   <td className="p-3 text-xs xs:text-sm">
-                    <Badge variant="outline">Source</Badge>
+                    <Badge variant="outline">User</Badge>
                   </td>
                   <td className="p-3 text-xs xs:text-sm">
-                    New source added for verification
+                    New user registration approved
                   </td>
-                  <td className="p-3 text-xs xs:text-sm">maria@veritas.com</td>
+                  <td className="p-3 text-xs xs:text-sm">ana@veritas.com</td>
                   <td className="p-3 text-xs xs:text-sm">15 minutes ago</td>
                   <td className="p-3 text-right">
                     <Button size="sm" variant="ghost" className="h-7 w-7 p-0 tap-target">
@@ -435,10 +368,10 @@ export function DashboardOverview() {
                 </tr>
                 <tr className="hover:bg-muted/50">
                   <td className="p-3 text-xs xs:text-sm">
-                    <Badge variant="outline">System</Badge>
+                    <Badge variant="outline">Content</Badge>
                   </td>
                   <td className="p-3 text-xs xs:text-sm">
-                    AI model updated to version 2.4.1
+                    Misinformation claim marked as reviewed
                   </td>
                   <td className="p-3 text-xs xs:text-sm">system@veritas.com</td>
                   <td className="p-3 text-xs xs:text-sm">1 hour ago</td>

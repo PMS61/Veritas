@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Settings, User, Shield, Bell, Users, Save, Eye, EyeOff, Mail, Phone, Lock } from "lucide-react"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/components/ui/use-mobile"
 
 export function UserSettings() {
   const [showPassword, setShowPassword] = useState(false)
@@ -39,8 +39,108 @@ export function UserSettings() {
     auditLogging: true,
   })
 
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState("")
+
+  const handleSaveProfile = async () => {
+    setIsSaving(true)
+    setSaveError("")
+    setSaveSuccess(false)
+
+    try {
+      // Integration point: Call backend API to save profile
+      // import { api } from '@/lib/api/client';
+      // const result = await api.settings.updateProfile(userProfile);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error: any) {
+      console.error('Profile save failed:', error)
+      setSaveError(error.message || 'Failed to save profile')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleUpdatePassword = async (currentPassword: string, newPassword: string) => {
+    if (!currentPassword || !newPassword) {
+      setSaveError('Please fill in all password fields')
+      return
+    }
+
+    setIsSaving(true)
+    setSaveError("")
+    setSaveSuccess(false)
+
+    try {
+      // Integration point: Call backend API to update password
+      // import { api } from '@/lib/api/client';
+      // const result = await api.settings.updatePassword({ currentPassword, newPassword });
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error: any) {
+      console.error('Password update failed:', error)
+      setSaveError(error.message || 'Failed to update password')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleSaveSecuritySettings = async () => {
+    setIsSaving(true)
+    setSaveError("")
+    setSaveSuccess(false)
+
+    try {
+      // Integration point: Call backend API to save security settings
+      // import { api } from '@/lib/api/client';
+      // const result = await api.settings.updateSecurity(securitySettings);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error: any) {
+      console.error('Security settings save failed:', error)
+      setSaveError(error.message || 'Failed to save security settings')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleSaveNotifications = async () => {
+    setIsSaving(true)
+    setSaveError("")
+    setSaveSuccess(false)
+
+    try {
+      // Integration point: Call backend API to save notification settings
+      // import { api } from '@/lib/api/client';
+      // const result = await api.settings.updateNotifications(notifications);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } catch (error: any) {
+      console.error('Notification settings save failed:', error)
+      setSaveError(error.message || 'Failed to save notification settings')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   const userRoles = [
-    { id: "admin", name: "Administrator", permissions: ["all"] },
     { id: "analyst", name: "Crisis Analyst", permissions: ["read", "analyze", "report"] },
     { id: "monitor", name: "Monitor", permissions: ["read", "monitor"] },
     { id: "viewer", name: "Viewer", permissions: ["read"] },
@@ -198,11 +298,21 @@ export function UserSettings() {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2 pt-3 xs:pt-4">
-                <Button className="h-8 xs:h-9 text-xs xs:text-sm tap-target">
+                <Button 
+                  className="h-8 xs:h-9 text-xs xs:text-sm tap-target"
+                  onClick={handleSaveProfile}
+                  disabled={isSaving}
+                >
                   <Save className="w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2" />
-                  Save Changes
+                  {isSaving ? 'Saving...' : 'Save Changes'}
                 </Button>
                 <Button variant="outline" className="h-8 xs:h-9 text-xs xs:text-sm tap-target">Cancel</Button>
+                {saveSuccess && (
+                  <span className="text-xs xs:text-sm text-green-600 ml-2">✓ Saved successfully</span>
+                )}
+                {saveError && (
+                  <span className="text-xs xs:text-sm text-red-600 ml-2">{saveError}</span>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -248,9 +358,17 @@ export function UserSettings() {
                     <Input id="new-password" type="password" placeholder="Enter new password" className="h-9 xs:h-10 text-sm tap-target" />
                   </div>
                 </div>
-                <Button className="h-8 xs:h-9 text-xs xs:text-sm tap-target">
+                <Button 
+                  className="h-8 xs:h-9 text-xs xs:text-sm tap-target"
+                  onClick={() => {
+                    const currentPwd = (document.getElementById('current-password') as HTMLInputElement)?.value
+                    const newPwd = (document.getElementById('new-password') as HTMLInputElement)?.value
+                    handleUpdatePassword(currentPwd, newPwd)
+                  }}
+                  disabled={isSaving}
+                >
                   <Lock className="w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2" />
-                  Update Password
+                  {isSaving ? 'Updating...' : 'Update Password'}
                 </Button>
               </div>
 

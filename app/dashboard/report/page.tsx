@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { PublicLayout } from "@/components/public-layout"
+import { DashboardLayout } from "@/components/dashboard-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -29,14 +29,24 @@ export default function ReportPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitted(true)
-      setIsSubmitting(false)
-    }, 2000)
+    try {
+      // Integration point: Call backend API for misinformation report submission
+      // import { api } from '@/lib/api/client';
+      // const result = await api.report.submitReport(formData);
+      
+      // Simulate API call for now
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Report submission failed:', error);
+      // Handle error - show error message to user
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -45,7 +55,7 @@ export default function ReportPage() {
 
   if (isSubmitted) {
     return (
-      <PublicLayout>
+      <DashboardLayout>
         <div className="container mx-auto px-4 py-16">
           <Card className="max-w-md mx-auto text-center">
             <CardContent className="p-8">
@@ -64,12 +74,12 @@ export default function ReportPage() {
             </CardContent>
           </Card>
         </div>
-      </PublicLayout>
+      </DashboardLayout>
     )
   }
 
   return (
-    <PublicLayout>
+    <DashboardLayout>
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
@@ -319,6 +329,6 @@ export default function ReportPage() {
           </CardContent>
         </Card>
       </div>
-    </PublicLayout>
+    </DashboardLayout>
   )
 }

@@ -35,7 +35,7 @@ import {
   Users,
   MessageSquare,
 } from "lucide-react"
-import { useIsMobile } from "@/hooks/use-mobile"
+import { useIsMobile } from "@/components/ui/use-mobile"
 
 interface AnalyticsData {
   timeSeriesData: Array<{
@@ -72,7 +72,46 @@ export function AnalyticsReporting() {
   const [timeRange, setTimeRange] = useState("7d")
   const [selectedMetric, setSelectedMetric] = useState("all")
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
+  const [isExporting, setIsExporting] = useState(false)
   const isMobile = useIsMobile()
+
+  const handleExport = async (format: 'csv' | 'json' | 'pdf') => {
+    setIsExporting(true)
+    
+    try {
+      // Integration point: Call backend API to export analytics
+      // import { api } from '@/lib/api/client';
+      // const result = await api.analytics.exportReport(format, { timeRange, selectedMetric });
+      
+      // Simulate export for now
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      // Create mock export data
+      const exportData = {
+        timeRange,
+        exportedAt: new Date().toISOString(),
+        data: analyticsData
+      }
+      
+      // Trigger download
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `veritas-analytics-${timeRange}-${Date.now()}.${format}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+      
+      console.log(`Exported analytics report in ${format} format`)
+    } catch (error) {
+      console.error('Export failed:', error)
+      // Handle error - show error notification
+    } finally {
+      setIsExporting(false)
+    }
+  }
 
   // Mock analytics data
   const mockAnalyticsData: AnalyticsData = {
@@ -171,9 +210,15 @@ export function AnalyticsReporting() {
               <SelectItem value="90d">Last 90 days</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm" className="h-8 xs:h-9 text-xs xs:text-sm tap-target">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-8 xs:h-9 text-xs xs:text-sm tap-target"
+            onClick={() => handleExport('json')}
+            disabled={isExporting}
+          >
             <Download className="w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2" />
-            <span className="truncate">Export</span>
+            <span className="truncate">{isExporting ? 'Exporting...' : 'Export'}</span>
             <span className="hidden xs:inline"> Report</span>
           </Button>
         </div>

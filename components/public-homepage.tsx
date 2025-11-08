@@ -22,7 +22,7 @@ import {
   AlertTriangle,
   Zap,
 } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/components/ui/use-mobile";
 import { GettingStarted } from "@/components/getting-started";
 
 // Mock data for public interface
