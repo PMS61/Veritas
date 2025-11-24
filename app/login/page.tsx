@@ -35,7 +35,7 @@ export default function LoginPage() {
     setError("");
   };
 
-  const handlePublicLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -44,24 +44,20 @@ export default function LoginPage() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // Simulate authentication with demo credentials
-    setTimeout(() => {
-      if (email === "user@demo.com" && password === "demo123") {
-        const userData = { email, role: "user" as const };
-        console.log("Logging in user:", userData);
-        login(userData);
-        console.log("User logged in, redirecting to dashboard");
-        // Small delay to ensure state is updated
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 100);
-      } else if (email && password) {
-        setError("Invalid credentials. Please use the demo credentials provided above.");
+    try {
+      const result = await login(email, password);
+
+      if (result.success) {
+        router.push("/dashboard");
       } else {
-        setError("Please enter valid credentials");
+        setError(result.error || "Login failed. Please try again.");
       }
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
 
@@ -93,21 +89,19 @@ export default function LoginPage() {
                 </CardDescription>
               </CardHeader>
               
-              {/* Demo credentials info */}
+              {/* Login info */}
               <CardContent className="pb-0">
                 <Alert className="mb-4 bg-blue-50 border-blue-200 dark:bg-blue-950 dark:border-blue-800">
                   <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <AlertDescription className="text-xs xs:text-sm text-blue-800 dark:text-blue-200">
-                    <strong>Demo Credentials:</strong>
+                    <strong>Welcome to Veritas!</strong>
                     <br />
-                    Email: <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded">user@demo.com</code>
-                    <br />
-                    Password: <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded">demo123</code>
+                    Sign in with your registered account or create a new account to get started.
                   </AlertDescription>
                 </Alert>
               </CardContent>
               
-              <form onSubmit={handlePublicLogin}>
+              <form onSubmit={handleLogin}>
                 <CardContent className="space-y-3 xs:space-y-4 pt-0">
                   {error && (
                     <Alert variant="destructive" className="py-2">

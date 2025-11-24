@@ -13,8 +13,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertTriangle, Upload, Send, CheckCircle, Shield, Eye } from "lucide-react"
+import { createReport } from "@/actions/reports"
+import { useAuth } from "@/components/auth-provider"
 
 export default function ReportPage() {
+  const { user } = useAuth()
   const [formData, setFormData] = useState({
     type: "",
     source: "",
@@ -27,23 +30,46 @@ export default function ReportPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [reportId, setReportId] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // Integration point: Call backend API for misinformation report submission
-      // import { api } from '@/lib/api/client';
-      // const result = await api.report.submitReport(formData);
-      
-      // Simulate API call for now
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setIsSubmitted(true);
+      const formDataToSend = new FormData(e.currentTarget);
+
+      // Add form fields manually
+      formDataToSend.append('type', formData.type);
+      formDataToSend.append('source', formData.source);
+      formDataToSend.append('url', formData.url);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('impact', formData.impact);
+      formDataToSend.append('evidence', formData.evidence);
+      formDataToSend.append('anonymous', formData.anonymous.toString());
+      formDataToSend.append('contact', formData.contact);
+
+      const result = await createReport(formDataToSend, user?.id);
+
+      if (result.success) {
+        setReportId(result.data.id);
+        setIsSubmitted(true);
+        setFormData({
+          type: "",
+          source: "",
+          url: "",
+          description: "",
+          impact: "",
+          evidence: "",
+          anonymous: false,
+          contact: "",
+        });
+      } else {
+        alert(result.error || "Failed to submit report. Please try again.");
+      }
     } catch (error) {
       console.error('Report submission failed:', error);
-      // Handle error - show error message to user
+      alert("An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -67,9 +93,12 @@ export default function ReportPage() {
               </p>
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  <strong>Reference ID:</strong> CR-{Math.random().toString(36).substr(2, 9).toUpperCase()}
+                  <strong>Report ID:</strong> {reportId || 'Processing...'}
                 </p>
-                <Button onClick={() => setIsSubmitted(false)}>Submit Another Report</Button>
+                <Button onClick={() => {
+                  setIsSubmitted(false);
+                  setReportId("");
+                }}>Submit Another Report</Button>
               </div>
             </CardContent>
           </Card>
@@ -165,12 +194,14 @@ export default function ReportPage() {
                         <SelectValue placeholder="Select the type of false information" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="false-emergency">False Emergency Alert</SelectItem>
-                        <SelectItem value="fake-news">Fake News Article</SelectItem>
-                        <SelectItem value="manipulated-media">Manipulated Image/Video</SelectItem>
-                        <SelectItem value="false-official">False Official Statement</SelectItem>
+                        <SelectItem value="false_emergency">False Emergency Alert</SelectItem>
+                        <SelectItem value="fake_news">Fake News Article</SelectItem>
+                        <SelectItem value="manipulated_media">Manipulated Image/Video</SelectItem>
+                        <SelectItem value="false_official">False Official Statement</SelectItem>
                         <SelectItem value="conspiracy">Conspiracy Theory</SelectItem>
-                        <SelectItem value="health-misinfo">Health Misinformation</SelectItem>
+                        <SelectItem value="health_misinfo">Health Misinformation</SelectItem>
+                        <SelectItem value="political">Political Misinformation</SelectItem>
+                        <SelectItem value="financial">Financial Scam</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
                       </SelectContent>
                     </Select>

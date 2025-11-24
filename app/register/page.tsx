@@ -21,7 +21,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const router = useRouter()
-  const { login } = useAuth()
+  const { register } = useAuth()
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -32,8 +32,7 @@ export default function RegisterPage() {
     const email = formData.get("email") as string
     const password = formData.get("password") as string
     const confirmPassword = formData.get("confirm-password") as string
-    const firstName = formData.get("first-name") as string
-    const lastName = formData.get("last-name") as string
+    const fullName = formData.get("full-name") as string
     const agreeTerms = formData.get("agree-terms")
 
     if (password !== confirmPassword) {
@@ -48,30 +47,23 @@ export default function RegisterPage() {
       return
     }
 
-    // Simulate registration
-    setTimeout(() => {
-      if (email && password && firstName && lastName) {
+    try {
+      const result = await register(email, password, fullName)
+
+      if (result.success) {
         setSuccess(true)
         setTimeout(() => {
-          const userData = {
-            email,
-            firstName,
-            lastName,
-            role: "user" as const,
-          }
-          console.log("Registering user:", userData)
-          login(userData)
-          console.log("User registered, redirecting to dashboard")
-          // Small delay to ensure state is updated
-          setTimeout(() => {
-            router.push("/dashboard")
-          }, 100)
+          router.push("/login")
         }, 2000)
       } else {
-        setError("Please fill in all required fields")
+        setError(result.error || "Registration failed. Please try again.")
       }
+    } catch (error) {
+      console.error("Registration error:", error)
+      setError("An unexpected error occurred. Please try again.")
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   if (success) {
@@ -83,7 +75,7 @@ export default function RegisterPage() {
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
               <h2 className="text-2xl font-bold">Registration Successful!</h2>
               <p className="text-muted-foreground">
-                Your account has been created. You'll be redirected to the dashboard shortly.
+                Your account has been created. Please check your email to verify your account, then sign in.
               </p>
             </div>
           </CardContent>
@@ -117,15 +109,9 @@ export default function RegisterPage() {
                 </Alert>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="first-name">First Name</Label>
-                  <Input id="first-name" name="first-name" placeholder="John" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="last-name">Last Name</Label>
-                  <Input id="last-name" name="last-name" placeholder="Doe" required />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="full-name">Full Name</Label>
+                <Input id="full-name" name="full-name" placeholder="John Doe" required />
               </div>
 
               <div className="space-y-2">

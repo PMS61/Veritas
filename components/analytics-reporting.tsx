@@ -36,6 +36,16 @@ import {
   MessageSquare,
 } from "lucide-react"
 import { useIsMobile } from "@/components/ui/use-mobile"
+import { useAuth } from "@/components/auth-provider"
+import {
+  getAnalyticsOverview,
+  getTimeSeriesData,
+  getSourceDistribution,
+  getCategoryBreakdown,
+  exportAnalyticsData
+} from "@/actions/analytics"
+import { getAlertStats } from "@/actions/alerts"
+import { getClaims } from "@/actions/claims"
 
 interface AnalyticsData {
   timeSeriesData: Array<{
@@ -69,49 +79,129 @@ interface AnalyticsData {
 }
 
 export function AnalyticsReporting() {
+  const { user } = useAuth()
   const [timeRange, setTimeRange] = useState("7d")
   const [selectedMetric, setSelectedMetric] = useState("all")
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState("")
   const [isExporting, setIsExporting] = useState(false)
+  const [realTimeStats, setRealTimeStats] = useState<any>(null)
   const isMobile = useIsMobile()
 
-  const handleExport = async (format: 'csv' | 'json' | 'pdf') => {
-    setIsExporting(true)
-    
+  // Get date range from selected time range
+  const getDateRange = (range: string) => {
+    const now = new Date()
+    const start = new Date()
+
+    switch (range) {
+      case "24h":
+        start.setHours(start.getHours() - 24)
+        break
+      case "7d":
+        start.setDate(start.getDate() - 7)
+        break
+      case "30d":
+        start.setDate(start.getDate() - 30)
+        break
+      case "90d":
+        start.setDate(start.getDate() - 90)
+        break
+      default:
+        start.setDate(start.getDate() - 7)
+    }
+
+    return {
+      start_date: start.toISOString(),
+      end_date: now.toISOString()
+    }
+  }
+
+  // Load real-time data
+  const loadRealTimeData = async () => {
     try {
-      // Integration point: Call backend API to export analytics
-      // import { api } from '@/lib/api/client';
-      // const result = await api.analytics.exportReport(format, { timeRange, selectedMetric });
-      
-      // Simulate export for now
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      // Create mock export data
-      const exportData = {
-        timeRange,
-        exportedAt: new Date().toISOString(),
-        data: analyticsData
+      const dateRange = getDateRange(timeRange)
+
+      const [alertStatsResult, claimsResult] = await Promise.all([
+        getAlertStats(),
+        getClaims(dateRange, 1, 100)
+      ])
+
+      const stats = {
+        total_alerts: alertStatsResult.data?.total_alerts || 0,
+        active_alerts: alertStatsResult.data?.active_alerts || 0,
+        resolved_alerts: alertStatsResult.data?.resolved_alerts || 0,
+        total_claims: claimsResult.count || 0,
+        time_range: timeRange
       }
-      
-      // Trigger download
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' })
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `veritas-analytics-${timeRange}-${Date.now()}.${format}`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      window.URL.revokeObjectURL(url)
-      
-      console.log(`Exported analytics report in ${format} format`)
+
+      setRealTimeStats(stats)
+    } catch (error) {
+      console.error('Failed to load real-time data:', error)
+    }
+  }
+
+  // Load analytics data
+  const loadAnalyticsData = async () => {
+    try {
+      setIsLoading(true)
+      setError("")
+
+      const dateRange = getDateRange(timeRange)
+
+      // Load real-time stats
+      await loadRealTimeData()
+
+      // For now, use mock data for complex analytics since server actions are basic
+      // In a production environment, you'd implement proper analytics RPC functions
+      setAnalyticsData(mockAnalyticsData)
+
+    } catch (error) {
+      console.error('Failed to load analytics data:', error)
+      setError("Failed to load analytics data. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleExport = async (format: 'csv' | 'json') => {
+    if (!user) return
+
+    setIsExporting(true)
+
+    try {
+      const dateRange = getDateRange(timeRange)
+      const result = await exportAnalyticsData(format, dateRange)
+
+      if (result.data) {
+        // Create download
+        const blob = new Blob([result.data], {
+          type: format === 'csv' ? 'text/csv' : 'application/json'
+        })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `veritas-analytics-${timeRange}-${Date.now()}.${format}`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(url)
+      } else {
+        setError(result.error || "Export failed")
+      }
+
     } catch (error) {
       console.error('Export failed:', error)
-      // Handle error - show error notification
+      setError("Failed to export analytics data")
     } finally {
       setIsExporting(false)
     }
   }
+
+  // Load data on mount and when time range changes
+  useEffect(() => {
+    loadAnalyticsData()
+  }, [timeRange])
 
   // Mock analytics data
   const mockAnalyticsData: AnalyticsData = {
@@ -157,17 +247,34 @@ export function AnalyticsReporting() {
     ],
   }
 
-  useEffect(() => {
-    setAnalyticsData(mockAnalyticsData)
-  }, [])
-
-  if (!analyticsData) {
-    return <div>Loading analytics...</div>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <BarChart3 className="w-8 h-8 animate-spin mx-auto mb-2 text-muted-foreground" />
+          <p className="text-muted-foreground">Loading analytics...</p>
+        </div>
+      </div>
+    )
   }
 
-  const totalIncidents = analyticsData.timeSeriesData?.reduce((sum, day) => sum + (day?.misinformation || 0), 0) || 0
+  if (!analyticsData) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <BarChart3 className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+          <p className="text-muted-foreground">No analytics data available</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Use real stats where available, fallback to mock data
+  const totalIncidents = realTimeStats?.total_claims ||
+    analyticsData.timeSeriesData?.reduce((sum, day) => sum + (day?.misinformation || 0), 0) || 0
   const totalVerified = analyticsData.timeSeriesData?.reduce((sum, day) => sum + (day?.verified || 0), 0) || 0
-  const totalAlerts = analyticsData.timeSeriesData?.reduce((sum, day) => sum + (day?.alerts || 0), 0) || 0
+  const totalAlerts = realTimeStats?.active_alerts ||
+    analyticsData.timeSeriesData?.reduce((sum, day) => sum + (day?.alerts || 0), 0) || 0
   const avgEngagement = Math.round(
     (analyticsData.timeSeriesData?.reduce((sum, day) => sum + (day?.engagement || 0), 0) || 0) /
       (analyticsData.timeSeriesData?.length || 1),
@@ -210,12 +317,12 @@ export function AnalyticsReporting() {
               <SelectItem value="90d">Last 90 days</SelectItem>
             </SelectContent>
           </Select>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="h-8 xs:h-9 text-xs xs:text-sm tap-target"
             onClick={() => handleExport('json')}
-            disabled={isExporting}
+            disabled={isExporting || !user}
           >
             <Download className="w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2" />
             <span className="truncate">{isExporting ? 'Exporting...' : 'Export'}</span>
@@ -223,6 +330,13 @@ export function AnalyticsReporting() {
           </Button>
         </div>
       </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="bg-destructive/10 border border-destructive/20 text-destructive p-3 rounded-lg">
+          <p className="text-sm">{error}</p>
+        </div>
+      )}
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 xs:gap-3 lg:gap-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -52,6 +52,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useIsMobile } from "@/components/ui/use-mobile";
+import { useAuth } from "@/components/auth-provider";
+import { createAlert } from "@/actions/alerts";
+import { getClaims } from "@/actions/claims";
+import { getAlertStats } from "@/actions/alerts";
+import { getProfiles } from "@/actions/profiles";
+import { getAuditLogs } from "@/actions/audit";
 
 interface QuickAction {
   id: string;
@@ -70,42 +76,131 @@ interface SystemAlert {
   actionRequired: boolean;
 }
 
-const quickActions: QuickAction[] = [
-  {
-    id: "pending-verifications",
-    title: "Pending Verifications",
-    description: "Claims awaiting review and approval",
-    urgency: "high",
-    type: "verification",
-    count: 12,
-  },
-  {
-    id: "flagged-content",
-    title: "Flagged Content",
-    description: "User-reported misinformation requiring moderation",
-    urgency: "high",
-    type: "moderation",
-    count: 8,
-  },
-];
-
-
-
 export function DashboardOverview() {
+  const { user } = useAuth()
   const [publishDialog, setPublishDialog] = useState(false);
   const [alertDialog, setAlertDialog] = useState(false);
   const [banDialog, setBanDialog] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertType, setAlertType] = useState("info");
   const [quickActionDialog, setQuickActionDialog] = useState(false);
-  const [selectedAction, setSelectedAction] = useState<QuickAction | null>(
-    null,
-  );
+  const [selectedAction, setSelectedAction] = useState<QuickAction | null>(null);
   const [emergencyActionDialog, setEmergencyActionDialog] = useState(false);
-  const [selectedEmergencyAction, setSelectedEmergencyAction] = useState<
-    string | null
-  >(null);
+  const [selectedEmergencyAction, setSelectedEmergencyAction] = useState<string | null>(null);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [error, setError] = useState("");
+  const [dashboardStats, setDashboardStats] = useState<any>(null);
+  const [quickActions, setQuickActions] = useState<QuickAction[]>([
+    {
+      id: "pending-verifications",
+      title: "Pending Verifications",
+      description: "Claims awaiting review and approval",
+      urgency: "high",
+      type: "verification",
+      count: 0,
+    },
+    {
+      id: "flagged-content",
+      title: "Flagged Content",
+      description: "User-reported misinformation requiring moderation",
+      urgency: "high",
+      type: "moderation",
+      count: 0,
+    },
+  ]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const isMobile = useIsMobile();
+
+  // Load dashboard data
+  const loadDashboardData = async () => {
+    if (!user) return;
+
+    try {
+      const [claimsResult, alertStatsResult, profilesResult, auditResult] = await Promise.all([
+        getClaims({ status: 'pending' }, 1, 50),
+        getAlertStats(),
+        getProfiles({}, 1, 10),
+        getAuditLogs({ limit: 10 })
+      ])
+
+      // Update quick actions with real counts
+      setQuickActions(prev => prev.map(action => ({
+        ...action,
+        count: action.id === 'pending-verifications'
+          ? claimsResult.count || 0
+          : action.id === 'flagged-content'
+          ? alertStatsResult.data?.active_alerts || 0
+          : action.count
+      })))
+
+      // Calculate dashboard stats
+      const stats = {
+        total_users: profilesResult.count || 0,
+        total_verifications: alertStatsResult.data?.total_alerts || 0,
+        detected_false_info: alertStatsResult.data?.critical_alerts || 0,
+        avg_response_time: '24s' // This would come from analytics data
+      }
+
+      setDashboardStats(stats)
+
+      // Process recent activity from audit logs
+      const activity = auditResult.data?.map((log: any) => ({
+        type: log.action.includes('user') ? 'User' :
+              log.action.includes('alert') ? 'Alert' :
+              log.action.includes('claim') ? 'Verification' : 'System',
+        description: `${log.action} on ${log.resource_type}`,
+        user: log.profiles?.full_name || 'System',
+        time: new Date(log.created_at).toLocaleString(),
+        id: log.id
+      })) || []
+
+      setRecentActivity(activity.slice(0, 3))
+
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error)
+      setError('Failed to load dashboard data')
+    }
+  }
+
+  // Load data on component mount
+  useEffect(() => {
+    loadDashboardData()
+  }, [user])
+
+  const handlePublishAlert = async () => {
+    if (!user || !alertMessage.trim()) return
+
+    setIsPublishing(true)
+    setError("")
+
+    try {
+      const formData = new FormData()
+      formData.append('title', `System ${alertType === 'error' ? 'Critical' : alertType === 'warning' ? 'Warning' : 'Information'} Alert`)
+      formData.append('description', alertMessage)
+      formData.append('severity', alertType === 'error' ? 'critical' : alertType === 'warning' ? 'high' : 'medium')
+      formData.append('category', 'System Alert')
+      formData.append('source', 'Dashboard Admin')
+      formData.append('status', 'active')
+      formData.append('tags', JSON.stringify([alertType, 'system', 'broadcast']))
+
+      const result = await createAlert(formData, user.id)
+
+      if (result.success) {
+        setAlertDialog(false)
+        setAlertMessage("")
+        setAlertType("info")
+        // Reload dashboard data to show updated stats
+        await loadDashboardData()
+      } else {
+        setError(result.error || "Failed to publish alert")
+      }
+    } catch (error) {
+      console.error('Failed to publish alert:', error)
+      setError("An unexpected error occurred while publishing alert")
+    } finally {
+      setIsPublishing(false)
+    }
+  }
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
@@ -122,23 +217,7 @@ export function DashboardOverview() {
 
 
 
-  const handlePublishAlert = async () => {
-    try {
-      // Integration point: Call backend API to publish alert
-      // import { api } from '@/lib/api/client';
-      // const result = await api.alerts.createAlert({ message: alertMessage, type: alertType });
-      console.log("Alert published:", { message: alertMessage, type: alertType });
-      // Handle success - show toast notification
-    } catch (error) {
-      console.error('Failed to publish alert:', error);
-      // Handle error - show error notification
-    }
-
-    setAlertDialog(false);
-    setAlertMessage("");
-    setAlertType("info");
-  };
-
+  
   const handleQuickAction = (action: QuickAction) => {
     setSelectedAction(action);
     setQuickActionDialog(true);
@@ -194,9 +273,17 @@ export function DashboardOverview() {
             Veritas truth verification control center
           </p>
         </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="bg-destructive/10 border border-destructive/20 text-destructive p-3 rounded-lg">
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
         <div className="flex flex-col xs:flex-row gap-2 xs:gap-3">
           <Button
             onClick={() => setAlertDialog(true)}
+            disabled={!user}
             className="w-full xs:w-auto text-sm xs:text-base h-10 xs:h-12 font-medium tap-target"
           >
             <Megaphone className="w-4 h-4 mr-2" />
@@ -204,6 +291,7 @@ export function DashboardOverview() {
           </Button>
           <Button
             onClick={() => setBanDialog(true)}
+            disabled={!user}
             className="w-full xs:w-auto text-sm xs:text-base h-10 xs:h-12 font-medium tap-target"
             variant="destructive"
           >
@@ -224,9 +312,11 @@ export function DashboardOverview() {
               </CardTitle>
             </CardHeader>
             <CardContent className="py-2 xs:py-3 md:py-4">
-              <div className="text-2xl xs:text-3xl md:text-4xl font-bold">1,342</div>
+              <div className="text-2xl xs:text-3xl md:text-4xl font-bold">
+                {dashboardStats?.total_users?.toLocaleString() || '...'}
+              </div>
               <p className="text-xs xs:text-sm text-muted-foreground mt-0 xs:mt-1">
-                +12% from last month
+                Total registered users
               </p>
             </CardContent>
           </Card>
@@ -239,9 +329,11 @@ export function DashboardOverview() {
               </CardTitle>
             </CardHeader>
             <CardContent className="py-2 xs:py-3 md:py-4">
-              <div className="text-2xl xs:text-3xl md:text-4xl font-bold">24,985</div>
+              <div className="text-2xl xs:text-3xl md:text-4xl font-bold">
+                {dashboardStats?.total_verifications?.toLocaleString() || '...'}
+              </div>
               <p className="text-xs xs:text-sm text-muted-foreground mt-0 xs:mt-1">
-                +4.2% from last week
+                Total alerts processed
               </p>
             </CardContent>
           </Card>
@@ -254,9 +346,11 @@ export function DashboardOverview() {
               </CardTitle>
             </CardHeader>
             <CardContent className="py-2 xs:py-3 md:py-4">
-              <div className="text-2xl xs:text-3xl md:text-4xl font-bold">312</div>
+              <div className="text-2xl xs:text-3xl md:text-4xl font-bold">
+                {dashboardStats?.detected_false_info?.toLocaleString() || '...'}
+              </div>
               <p className="text-xs xs:text-sm text-muted-foreground mt-0 xs:mt-1">
-                -8% from yesterday
+                Critical alerts detected
               </p>
             </CardContent>
           </Card>
@@ -269,9 +363,11 @@ export function DashboardOverview() {
               </CardTitle>
             </CardHeader>
             <CardContent className="py-2 xs:py-3 md:py-4">
-              <div className="text-2xl xs:text-3xl md:text-4xl font-bold">24s</div>
+              <div className="text-2xl xs:text-3xl md:text-4xl font-bold">
+                {dashboardStats?.avg_response_time || '...'}
+              </div>
               <p className="text-xs xs:text-sm text-muted-foreground mt-0 xs:mt-1">
-                -1.5s from average
+                Average response time
               </p>
             </CardContent>
           </Card>
@@ -336,51 +432,29 @@ export function DashboardOverview() {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b hover:bg-muted/50">
-                  <td className="p-3 text-xs xs:text-sm">
-                    <Badge variant="outline">Verification</Badge>
-                  </td>
-                  <td className="p-3 text-xs xs:text-sm">
-                    Health claim verification completed
-                  </td>
-                  <td className="p-3 text-xs xs:text-sm">john@veritas.com</td>
-                  <td className="p-3 text-xs xs:text-sm">2 minutes ago</td>
-                  <td className="p-3 text-right">
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0 tap-target">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
-                  </td>
-                </tr>
-                <tr className="border-b hover:bg-muted/50">
-                  <td className="p-3 text-xs xs:text-sm">
-                    <Badge variant="outline">User</Badge>
-                  </td>
-                  <td className="p-3 text-xs xs:text-sm">
-                    New user registration approved
-                  </td>
-                  <td className="p-3 text-xs xs:text-sm">ana@veritas.com</td>
-                  <td className="p-3 text-xs xs:text-sm">15 minutes ago</td>
-                  <td className="p-3 text-right">
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0 tap-target">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
-                  </td>
-                </tr>
-                <tr className="hover:bg-muted/50">
-                  <td className="p-3 text-xs xs:text-sm">
-                    <Badge variant="outline">Content</Badge>
-                  </td>
-                  <td className="p-3 text-xs xs:text-sm">
-                    Misinformation claim marked as reviewed
-                  </td>
-                  <td className="p-3 text-xs xs:text-sm">system@veritas.com</td>
-                  <td className="p-3 text-xs xs:text-sm">1 hour ago</td>
-                  <td className="p-3 text-right">
-                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0 tap-target">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </Button>
-                  </td>
-                </tr>
+                {recentActivity.length > 0 ? recentActivity.map((activity) => (
+                  <tr key={activity.id} className="border-b hover:bg-muted/50">
+                    <td className="p-3 text-xs xs:text-sm">
+                      <Badge variant="outline">{activity.type}</Badge>
+                    </td>
+                    <td className="p-3 text-xs xs:text-sm">
+                      {activity.description}
+                    </td>
+                    <td className="p-3 text-xs xs:text-sm">{activity.user}</td>
+                    <td className="p-3 text-xs xs:text-sm">{activity.time}</td>
+                    <td className="p-3 text-right">
+                      <Button size="sm" variant="ghost" className="h-7 w-7 p-0 tap-target">
+                        <MoreHorizontal className="w-4 h-4" />
+                      </Button>
+                    </td>
+                  </tr>
+                )) : (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-muted-foreground">
+                      No recent activity available
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -434,11 +508,11 @@ export function DashboardOverview() {
             </Button>
             <Button
               onClick={handlePublishAlert}
-              disabled={!alertMessage.trim()}
+              disabled={!alertMessage.trim() || isPublishing}
               className="w-full xs:w-auto text-sm xs:text-base h-10 xs:h-12 tap-target font-medium"
             >
               <Megaphone className="w-4 h-4 mr-2" />
-              Publish Alert
+              {isPublishing ? "Publishing..." : "Publish Alert"}
             </Button>
           </DialogFooter>
         </DialogContent>

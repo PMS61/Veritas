@@ -1,15 +1,15 @@
-import { 
-  Home, 
-  Shield, 
-  Eye, 
-  Users, 
-  BarChart3, 
-  TrendingUp, 
-  AlertTriangle, 
-  FileText, 
-  Mail, 
-  Info, 
-  User, 
+import {
+  Home,
+  Shield,
+  Eye,
+  Users,
+  BarChart3,
+  TrendingUp,
+  AlertTriangle,
+  FileText,
+  Mail,
+  Info,
+  User,
   Settings,
   LogOut,
   Monitor,
@@ -97,7 +97,19 @@ export const dashboardNavItems: NavItem[] = [
     title: "Reports",
     href: "/dashboard/report",
     icon: FileText,
-    description: "Generate reports"
+    description: "Submit misinformation reports"
+  },
+  {
+    title: "Alerts",
+    href: "/dashboard/alerts",
+    icon: Bell,
+    description: "Manage crisis alerts"
+  },
+  {
+    title: "Settings",
+    href: "/dashboard/settings",
+    icon: Settings,
+    description: "Manage your account settings"
   }
 ];
 

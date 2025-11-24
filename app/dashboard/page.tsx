@@ -126,9 +126,7 @@ export default function PublicDashboard() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-2">
             Welcome back,{" "}
-            {user.firstName
-              ? `${user.firstName} ${user.lastName || ""}`
-              : user.email}
+            {user.full_name || user.email}
           </h2>
           <p className="text-muted-foreground">
             Access comprehensive fact-checking and verified information

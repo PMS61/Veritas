@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from "lucide-react";
+import { createContactMessage } from "@/actions/contact";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -41,17 +42,25 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      // Integration point: Call backend API for contact form submission
-      // import { api } from '@/lib/api/client';
-      // const result = await api.contact.submitContactForm(formData);
-      
-      // Simulate API call for now
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setIsSubmitted(true);
+      const formDataToSend = new FormData(e.currentTarget);
+
+      const result = await createContactMessage(formDataToSend);
+
+      if (result.success) {
+        setIsSubmitted(true);
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          category: "",
+          message: "",
+        });
+      } else {
+        alert(result.error || "Failed to send message. Please try again.");
+      }
     } catch (error) {
       console.error('Contact form submission failed:', error);
-      // Handle error - show error message to user
+      alert("An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
