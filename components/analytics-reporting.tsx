@@ -152,9 +152,21 @@ export function AnalyticsReporting() {
       // Load real-time stats
       await loadRealTimeData()
 
-      // For now, use mock data for complex analytics since server actions are basic
-      // In a production environment, you'd implement proper analytics RPC functions
-      setAnalyticsData(mockAnalyticsData)
+      // Use real data for analytics
+      const analyticsResult = await getAnalyticsOverview(dateRange)
+
+      if (analyticsResult.success && analyticsResult.data) {
+        setAnalyticsData(analyticsResult.data)
+      } else {
+        // Show empty state if no analytics data available
+        setAnalyticsData({
+          timeSeriesData: [],
+          sourceDistribution: [],
+          categoryBreakdown: [],
+          geographicData: [],
+          trendAnalysis: []
+        })
+      }
 
     } catch (error) {
       console.error('Failed to load analytics data:', error)
@@ -203,50 +215,7 @@ export function AnalyticsReporting() {
     loadAnalyticsData()
   }, [timeRange])
 
-  // Mock analytics data
-  const mockAnalyticsData: AnalyticsData = {
-    timeSeriesData: [
-      { date: "2024-01-09", misinformation: 45, verified: 123, alerts: 12, engagement: 15420 },
-      { date: "2024-01-10", misinformation: 67, verified: 145, alerts: 18, engagement: 18930 },
-      { date: "2024-01-11", misinformation: 89, verified: 167, alerts: 25, engagement: 22340 },
-      { date: "2024-01-12", misinformation: 123, verified: 189, alerts: 34, engagement: 28750 },
-      { date: "2024-01-13", misinformation: 156, verified: 234, alerts: 42, engagement: 35680 },
-      { date: "2024-01-14", misinformation: 134, verified: 267, alerts: 38, engagement: 31240 },
-      { date: "2024-01-15", misinformation: 178, verified: 298, alerts: 47, engagement: 42150 },
-    ],
-    sourceDistribution: [
-      { name: "Twitter/X", value: 35, color: "#0dcaf0" },
-      { name: "Telegram", value: 25, color: "#3b82f6" },
-      { name: "News Portals", value: 18, color: "#fbbf24" },
-      { name: "Reddit", value: 12, color: "#ef4444" },
-      { name: "Forums", value: 7, color: "#4ade80" },
-      { name: "WhatsApp", value: 3, color: "#8b5cf6" },
-    ],
-    categoryBreakdown: [
-      { category: "Health Misinformation", count: 234, severity: 8.5 },
-      { category: "Election Misinformation", count: 189, severity: 9.2 },
-      { category: "Climate Misinformation", count: 156, severity: 7.8 },
-      { category: "Technology Misinformation", count: 123, severity: 6.9 },
-      { category: "Economic Misinformation", count: 98, severity: 7.3 },
-      { category: "Social Misinformation", count: 87, severity: 6.1 },
-    ],
-    geographicData: [
-      { region: "North America", incidents: 456, riskLevel: "high" },
-      { region: "Europe", incidents: 389, riskLevel: "medium" },
-      { region: "Asia", incidents: 234, riskLevel: "medium" },
-      { region: "South America", incidents: 123, riskLevel: "low" },
-      { region: "Africa", incidents: 89, riskLevel: "low" },
-      { region: "Oceania", incidents: 45, riskLevel: "low" },
-    ],
-    trendAnalysis: [
-      { keyword: "vaccine misinformation", mentions: 15420, sentiment: -0.8, growth: 0.23 },
-      { keyword: "election fraud", mentions: 12340, sentiment: -0.9, growth: 0.18 },
-      { keyword: "climate hoax", mentions: 8930, sentiment: -0.7, growth: 0.15 },
-      { keyword: "5g conspiracy", mentions: 6780, sentiment: -0.6, growth: 0.12 },
-      { keyword: "government surveillance", mentions: 5670, sentiment: -0.5, growth: 0.08 },
-    ],
-  }
-
+  
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">

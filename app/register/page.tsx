@@ -12,7 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Shield, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/components/auth-provider"
+import { signUp } from "@/actions/auth"
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -21,7 +21,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState(false)
   const router = useRouter()
-  const { register } = useAuth()
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -32,7 +31,6 @@ export default function RegisterPage() {
     const email = formData.get("email") as string
     const password = formData.get("password") as string
     const confirmPassword = formData.get("confirm-password") as string
-    const fullName = formData.get("full-name") as string
     const agreeTerms = formData.get("agree-terms")
 
     if (password !== confirmPassword) {
@@ -48,13 +46,10 @@ export default function RegisterPage() {
     }
 
     try {
-      const result = await register(email, password, fullName)
+      const result = await signUp(formData)
 
       if (result.success) {
         setSuccess(true)
-        setTimeout(() => {
-          router.push("/login")
-        }, 2000)
       } else {
         setError(result.error || "Registration failed. Please try again.")
       }

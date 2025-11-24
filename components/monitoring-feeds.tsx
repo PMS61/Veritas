@@ -44,128 +44,10 @@ export function MonitoringFeeds() {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([])
   const isMobile = useIsMobile()
 
-  // Mock real-time feed data
-  const mockFeedItems: FeedItem[] = [
-    {
-      id: "1",
-      source: "Twitter/X",
-      platform: "twitter",
-      content:
-        "Breaking: New study reveals concerning trends in vaccine misinformation spreading across social platforms. Researchers warn of coordinated disinformation campaign.",
-      timestamp: "2024-01-15T10:32:00Z",
-      engagement: 1247,
-      sentiment: "negative",
-      riskLevel: "high",
-      verified: false,
-      location: "Global",
-      author: "@healthwatch_news",
-      tags: ["vaccine", "misinformation", "health"],
-    },
-    {
-      id: "2",
-      source: "Telegram",
-      platform: "telegram",
-      content:
-        "URGENT: Election officials confirm security measures in place. All voting systems tested and verified. Ignore false claims about system vulnerabilities.",
-      timestamp: "2024-01-15T10:30:00Z",
-      engagement: 892,
-      sentiment: "positive",
-      riskLevel: "medium",
-      verified: true,
-      location: "United States",
-      author: "Election Security Channel",
-      tags: ["election", "security", "verification"],
-    },
-    {
-      id: "3",
-      source: "News Portal",
-      platform: "news",
-      content:
-        "Climate scientists debunk latest wave of climate denial claims circulating on social media. Peer-reviewed research contradicts viral misinformation.",
-      timestamp: "2024-01-15T10:28:00Z",
-      engagement: 634,
-      sentiment: "neutral",
-      riskLevel: "medium",
-      verified: true,
-      location: "Europe",
-      author: "Climate News Network",
-      tags: ["climate", "science", "debunk"],
-    },
-    {
-      id: "4",
-      source: "Reddit",
-      platform: "reddit",
-      content:
-        "r/conspiracy discussing unverified claims about government surveillance. Moderators working to fact-check and remove false information.",
-      timestamp: "2024-01-15T10:25:00Z",
-      engagement: 445,
-      sentiment: "negative",
-      riskLevel: "low",
-      verified: false,
-      location: "Global",
-      author: "u/factcheck_mod",
-      tags: ["surveillance", "conspiracy", "moderation"],
-    },
-    {
-      id: "5",
-      source: "WhatsApp",
-      platform: "whatsapp",
-      content:
-        "Forwarded message claiming false health remedies detected in multiple groups. Health authorities urge users to verify medical information.",
-      timestamp: "2024-01-15T10:22:00Z",
-      engagement: 267,
-      sentiment: "negative",
-      riskLevel: "high",
-      verified: false,
-      location: "Asia",
-      author: "Health Ministry Alert",
-      tags: ["health", "remedy", "forward"],
-    },
-    {
-      id: "6",
-      source: "YouTube",
-      platform: "youtube",
-      content:
-        "Video spreading false information about renewable energy removed for policy violations. Creator issued warning for misinformation.",
-      timestamp: "2024-01-15T10:20:00Z",
-      engagement: 112,
-      sentiment: "neutral",
-      riskLevel: "medium",
-      verified: true,
-      location: "Global",
-      author: "YouTube Policy Team",
-      tags: ["energy", "policy", "removal"],
-    },
-  ]
-
-  // Simulate real-time updates
+  // Load empty state - monitoring feeds would require external API integrations
   useEffect(() => {
-    setFeedItems(mockFeedItems)
-
-    if (isLive) {
-      const interval = setInterval(() => {
-        // Simulate new feed items arriving
-        const newItem: FeedItem = {
-          id: Date.now().toString(),
-          source: ["Twitter/X", "Telegram", "News Portal", "Reddit"][Math.floor(Math.random() * 4)],
-          platform: "twitter",
-          content: "New monitoring alert detected. Analyzing content for potential misinformation patterns...",
-          timestamp: new Date().toISOString(),
-          engagement: Math.floor(Math.random() * 1000),
-          sentiment: ["positive", "negative", "neutral"][Math.floor(Math.random() * 3)] as any,
-          riskLevel: ["low", "medium", "high"][Math.floor(Math.random() * 3)] as any,
-          verified: Math.random() > 0.5,
-          location: "Live Update",
-          author: "CrisisLens Monitor",
-          tags: ["live", "monitoring"],
-        }
-
-        setFeedItems((prev) => [newItem, ...prev.slice(0, 19)]) // Keep only 20 items
-      }, 5000) // Update every 5 seconds
-
-      return () => clearInterval(interval)
-    }
-  }, [isLive])
+    setFeedItems([])
+  }, [])
 
   const filteredItems = feedItems.filter((item) => {
     const matchesSearch =
@@ -329,7 +211,7 @@ export function MonitoringFeeds() {
         <CardContent className="px-3 xs:px-4 py-0 xs:py-0">
           <ScrollArea className="h-[400px] xs:h-[500px] lg:h-[600px] w-full">
             <div className="space-y-3 xs:space-y-4 pr-2">
-              {filteredItems.map((item) => (
+              {filteredItems.length > 0 ? filteredItems.map((item) => (
                 <div key={item.id} className="p-3 xs:p-4 rounded-lg bg-muted/50 border border-border">
                   <div className="flex items-start gap-2 xs:gap-3">
                     <div className="text-xl xs:text-2xl">{getPlatformIcon(item.platform)}</div>
@@ -396,7 +278,21 @@ export function MonitoringFeeds() {
                     </div>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="text-center py-16">
+                  <Activity className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg font-semibold mb-2">No Monitoring Feeds</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
+                    Live monitoring feeds require external API integrations. Configure your monitoring sources to start seeing real-time data.
+                  </p>
+                  <div className="mt-6 space-y-2 text-sm text-muted-foreground">
+                    <p>• Connect Twitter/X API</p>
+                    <p>• Configure Telegram channels</p>
+                    <p>• Set up news portal scraping</p>
+                    <p>• Integrate Reddit monitoring</p>
+                  </div>
+                </div>
+              )}
             </div>
           </ScrollArea>
         </CardContent>

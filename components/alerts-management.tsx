@@ -66,32 +66,9 @@ export function AlertsManagement() {
   const [error, setError] = useState("")
   const [isPerformingAction, setIsPerformingAction] = useState<string | null>(null)
 
-  // Mock data for rules and channels (these would have their own server actions)
-  const [alertRules] = useState<AlertRule[]>([
-    {
-      id: "1",
-      name: "Critical Misinformation Spike",
-      description: "Trigger when misinformation detection increases by >200% in 1 hour",
-      conditions: ["misinformation_rate > 200%", "time_window = 1h"],
-      severity: "critical",
-      channels: ["email", "sms", "slack"],
-      recipients: ["crisis-team@org.com"],
-      enabled: true,
-      lastTriggered: "2024-01-15T10:45:00Z",
-      triggerCount: 3,
-    },
-  ])
-
-  const [channels] = useState<NotificationChannel[]>([
-    {
-      id: "1",
-      type: "email",
-      name: "Crisis Team Email",
-      endpoint: "crisis-team@organization.com",
-      enabled: true,
-      lastUsed: "2024-01-15T10:45:00Z",
-    },
-  ])
+  // Empty state for rules and channels (these would have their own server actions)
+  const [alertRules] = useState<AlertRule[]>([])
+  const [channels] = useState<NotificationChannel[]>([])
 
   // Load alerts and stats
   useEffect(() => {

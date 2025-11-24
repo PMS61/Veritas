@@ -19,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/components/auth-provider";
+import { signIn } from "@/actions/auth";
 import { useIsMobile } from "@/components/ui/use-mobile";
 
 export default function LoginPage() {
@@ -27,7 +27,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-  const { login } = useAuth();
   const isMobile = useIsMobile();
 
   // Clear error message when switching tabs
@@ -41,11 +40,9 @@ export default function LoginPage() {
     setError("");
 
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
 
     try {
-      const result = await login(email, password);
+      const result = await signIn(formData);
 
       if (result.success) {
         router.push("/dashboard");
