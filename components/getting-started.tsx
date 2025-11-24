@@ -22,8 +22,7 @@ export function GettingStarted() {
       desc: "Register a free account or sign in to access personalized features.",
       action: { href: "/register", label: "Create account" },
       highlight: { top: 220, left: 120, width: 520, height: 220 },
-      prefill: { firstName: "Demo", lastName: "User", email: "demo@veritas.test" },
-    },
+      },
     {
       title: "Try a verification",
       desc: "Paste a claim or use search to request a verification — view sources and explanations.",
@@ -82,17 +81,6 @@ export function GettingStarted() {
   }, [open, autoPlay])
 
   const handleAction = (s: typeof steps[number]) => {
-    try {
-      if (s.prefill) {
-        localStorage.setItem("demo-prefill", JSON.stringify(s.prefill))
-      }
-      if ((s as any).enableDevAuth) {
-        localStorage.setItem("veritas-dev-auth", "1")
-      }
-    } catch (e) {
-      // ignore
-    }
-
     router.push(s.action.href)
     setTimeout(() => setOpen(false), 300)
   }

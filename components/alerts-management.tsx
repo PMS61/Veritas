@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import {
   Bell,
   BellRing,
@@ -26,22 +27,11 @@ import {
   CheckCircle,
   XCircle,
   Eye,
+  Plus,
+  RefreshCw,
 } from "lucide-react"
-
-interface Alert {
-  id: string
-  title: string
-  description: string
-  severity: "critical" | "high" | "medium" | "low"
-  category: string
-  source: string
-  timestamp: string
-  status: "active" | "acknowledged" | "resolved" | "dismissed"
-  assignedTo: string
-  tags: string[]
-  actions: string[]
-  relatedIncidents: number
-}
+import { useAuth } from "@/components/auth-provider"
+import { getAlerts, getAlertStats, updateAlertStatus, assignAlert, type Alert } from "@/actions/alerts"
 
 interface AlertRule {
   id: string
@@ -66,158 +56,95 @@ interface NotificationChannel {
 }
 
 export function AlertsManagement() {
+  const { user } = useAuth()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedSeverity, setSelectedSeverity] = useState("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
   const [alerts, setAlerts] = useState<Alert[]>([])
-  const [alertRules, setAlertRules] = useState<AlertRule[]>([])
-  const [channels, setChannels] = useState<NotificationChannel[]>([])
+  const [alertStats, setAlertStats] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [isPerformingAction, setIsPerformingAction] = useState<string | null>(null)
 
-  // Mock alerts data
-  const mockAlerts: Alert[] = [
-    {
-      id: "1",
-      title: "Critical Misinformation Spike Detected",
-      description: "Unusual surge in vaccine misinformation across multiple platforms. 300% increase in the last hour.",
-      severity: "critical",
-      category: "Health Misinformation",
-      source: "AI Detection System",
-      timestamp: "2024-01-15T10:45:00Z",
-      status: "active",
-      assignedTo: "Crisis Response Team",
-      tags: ["vaccine", "spike", "multi-platform"],
-      actions: ["escalated", "team-notified"],
-      relatedIncidents: 15,
-    },
-    {
-      id: "2",
-      title: "Election Fraud Claims Trending",
-      description: "Coordinated spread of election fraud claims detected on Telegram and Twitter/X.",
-      severity: "high",
-      category: "Election Misinformation",
-      source: "Pattern Recognition",
-      timestamp: "2024-01-15T10:30:00Z",
-      status: "acknowledged",
-      assignedTo: "Election Monitoring Team",
-      tags: ["election", "fraud", "coordinated"],
-      actions: ["acknowledged", "investigating"],
-      relatedIncidents: 8,
-    },
-    {
-      id: "3",
-      title: "New Suspicious Source Identified",
-      description: "Previously unknown Telegram channel spreading climate misinformation with high engagement.",
-      severity: "medium",
-      category: "Source Alert",
-      source: "Source Verification System",
-      timestamp: "2024-01-15T10:15:00Z",
-      status: "active",
-      assignedTo: "Verification Team",
-      tags: ["new-source", "climate", "telegram"],
-      actions: ["flagged", "under-review"],
-      relatedIncidents: 3,
-    },
-    {
-      id: "4",
-      title: "Fact-Check Request Backlog",
-      description: "Fact-checking queue has exceeded normal capacity. 50+ claims pending verification.",
-      severity: "medium",
-      category: "System Alert",
-      source: "System Monitor",
-      timestamp: "2024-01-15T09:45:00Z",
-      status: "resolved",
-      assignedTo: "Fact-Check Team",
-      tags: ["backlog", "capacity", "fact-check"],
-      actions: ["resolved", "capacity-increased"],
-      relatedIncidents: 0,
-    },
-  ]
+  // Empty state for rules and channels (these would have their own server actions)
+  const [alertRules] = useState<AlertRule[]>([])
+  const [channels] = useState<NotificationChannel[]>([])
 
-  // Mock alert rules
-  const mockAlertRules: AlertRule[] = [
-    {
-      id: "1",
-      name: "Critical Misinformation Spike",
-      description: "Trigger when misinformation detection increases by >200% in 1 hour",
-      conditions: ["misinformation_rate > 200%", "time_window = 1h"],
-      severity: "critical",
-      channels: ["email", "sms", "slack"],
-      recipients: ["crisis-team@org.com", "+1234567890"],
-      enabled: true,
-      lastTriggered: "2024-01-15T10:45:00Z",
-      triggerCount: 3,
-    },
-    {
-      id: "2",
-      name: "New High-Risk Source",
-      description: "Alert when a new source is flagged with high risk score",
-      conditions: ["new_source = true", "risk_score > 8.0"],
-      severity: "high",
-      channels: ["email", "slack"],
-      recipients: ["verification-team@org.com"],
-      enabled: true,
-      lastTriggered: "2024-01-15T08:30:00Z",
-      triggerCount: 12,
-    },
-    {
-      id: "3",
-      name: "System Performance Degradation",
-      description: "Monitor system performance and alert on degradation",
-      conditions: ["cpu_usage > 85%", "response_time > 5s"],
-      severity: "medium",
-      channels: ["email"],
-      recipients: ["ops-team@org.com"],
-      enabled: true,
-      triggerCount: 7,
-    },
-  ]
-
-  // Mock notification channels
-  const mockChannels: NotificationChannel[] = [
-    {
-      id: "1",
-      type: "email",
-      name: "Crisis Team Email",
-      endpoint: "crisis-team@organization.com",
-      enabled: true,
-      lastUsed: "2024-01-15T10:45:00Z",
-    },
-    {
-      id: "2",
-      type: "sms",
-      name: "Emergency SMS",
-      endpoint: "+1-555-0123",
-      enabled: true,
-      lastUsed: "2024-01-15T10:45:00Z",
-    },
-    {
-      id: "3",
-      type: "slack",
-      name: "Crisis Monitoring Channel",
-      endpoint: "#crisis-monitoring",
-      enabled: true,
-      lastUsed: "2024-01-15T10:30:00Z",
-    },
-    {
-      id: "4",
-      type: "webhook",
-      name: "External System Webhook",
-      endpoint: "https://api.external-system.com/alerts",
-      enabled: false,
-    },
-  ]
-
+  // Load alerts and stats
   useEffect(() => {
-    setAlerts(mockAlerts)
-    setAlertRules(mockAlertRules)
-    setChannels(mockChannels)
-  }, [])
+    const loadData = async () => {
+      try {
+        setIsLoading(true)
+        setError("")
+
+        const [alertsResult, statsResult] = await Promise.all([
+          getAlerts({
+            severity: selectedSeverity !== "all" ? selectedSeverity as any : undefined,
+            status: selectedStatus !== "all" ? selectedStatus as any : undefined,
+          }),
+          getAlertStats()
+        ])
+
+        if (alertsResult.error) {
+          setError(alertsResult.error)
+        } else if (alertsResult.data) {
+          setAlerts(alertsResult.data)
+        }
+
+        if (statsResult.data) {
+          setAlertStats(statsResult.data)
+        }
+      } catch (error) {
+        console.error('Failed to load alerts:', error)
+        setError("Failed to load alerts. Please try again.")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadData()
+  }, [selectedSeverity, selectedStatus])
+
+  // Handle alert actions
+  const handleStatusUpdate = async (alertId: string, newStatus: 'acknowledged' | 'resolved' | 'dismissed') => {
+    if (!user) return
+
+    try {
+      setIsPerformingAction(alertId)
+      const result = await updateAlertStatus(alertId, newStatus, user.id)
+
+      if (result.success) {
+        // Update local state
+        setAlerts(prev => prev.map(alert =>
+          alert.id === alertId
+            ? { ...alert, status: newStatus, resolved_at: newStatus === 'resolved' ? new Date().toISOString() : undefined }
+            : alert
+        ))
+
+        // Update stats if available
+        if (alertStats) {
+          setAlertStats(prev => ({
+            ...prev,
+            active_alerts: newStatus === 'resolved' ? Math.max(0, prev.active_alerts - 1) : prev.active_alerts,
+            resolved_alerts: newStatus === 'resolved' ? prev.resolved_alerts + 1 : prev.resolved_alerts,
+          }))
+        }
+      } else {
+        setError(result.error || "Failed to update alert status")
+      }
+    } catch (error) {
+      console.error('Failed to update alert status:', error)
+      setError("An unexpected error occurred")
+    } finally {
+      setIsPerformingAction(null)
+    }
+  }
 
   const filteredAlerts = alerts.filter((alert) => {
     const matchesSearch =
       alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       alert.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      alert.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      (alert.tags && alert.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase())))
     const matchesSeverity = selectedSeverity === "all" || alert.severity === selectedSeverity
     const matchesStatus = selectedStatus === "all" || alert.status === selectedStatus
     return matchesSearch && matchesSeverity && matchesStatus
@@ -285,10 +212,16 @@ export function AlertsManagement() {
     }
   }
 
-  const alertStats = {
-    active: alerts.filter((a) => a.status === "active").length,
+  // Calculate stats from loaded data or fallback
+  const currentAlertStats = alertStats || {
+    active_alerts: alerts.filter((a) => a.status === "active").length,
+    resolved_alerts: alerts.filter((a) => a.status === "resolved").length,
+  }
+
+  const displayStats = {
+    active: currentAlertStats.active_alerts || alerts.filter((a) => a.status === "active").length,
     acknowledged: alerts.filter((a) => a.status === "acknowledged").length,
-    resolved: alerts.filter((a) => a.status === "resolved").length,
+    resolved: currentAlertStats.resolved_alerts || alerts.filter((a) => a.status === "resolved").length,
     dismissed: alerts.filter((a) => a.status === "dismissed").length,
   }
 
@@ -305,7 +238,16 @@ export function AlertsManagement() {
         </div>
 
         <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 w-full xs:w-auto">
-          <Badge className="bg-destructive text-destructive-foreground text-xs">{alertStats.active} Active</Badge>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => window.location.reload()}
+            className="text-xs"
+          >
+            <RefreshCw className="w-3 h-3 mr-1" />
+            Refresh
+          </Button>
+          <Badge className="bg-destructive text-destructive-foreground text-xs">{displayStats.active} Active</Badge>
           <div className="flex items-center gap-2 text-xs xs:text-sm text-muted-foreground">
             <BellRing className="w-3 h-3 xs:w-4 xs:h-4 text-primary" />
             <span>Real-time Alerts</span>
@@ -313,9 +255,16 @@ export function AlertsManagement() {
         </div>
       </div>
 
+      {/* Error Display */}
+      {error && (
+        <Alert>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       {/* Alert Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 lg:gap-4">
-        {Object.entries(alertStats).map(([status, count]) => (
+        {Object.entries(displayStats).map(([status, count]) => (
           <Card key={status} className="bg-card shadow-sm">
             <CardContent className="p-3 xs:p-4">
               <div className="flex items-center justify-between">
@@ -403,9 +352,17 @@ export function AlertsManagement() {
               <CardDescription>Real-time crisis monitoring alerts and notifications</CardDescription>
             </CardHeader>
             <CardContent>
-              <ScrollArea className="h-[400px] xs:h-[500px] sm:h-[600px] w-full">
-                <div className="space-y-3 xs:space-y-4">
-                  {filteredAlerts.map((alert) => (
+              {isLoading ? (
+                <div className="flex items-center justify-center h-[400px] xs:h-[500px] sm:h-[600px]">
+                  <div className="text-center">
+                    <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-muted-foreground">Loading alerts...</p>
+                  </div>
+                </div>
+              ) : (
+                <ScrollArea className="h-[400px] xs:h-[500px] sm:h-[600px] w-full">
+                  <div className="space-y-3 xs:space-y-4">
+                    {filteredAlerts.length > 0 ? filteredAlerts.map((alert) => (
                     <div key={alert.id} className="p-3 xs:p-4 rounded-lg bg-muted/50 border border-border">
                       {/* Header */}
                       <div className="flex flex-col xs:flex-row xs:items-start xs:justify-between gap-2 xs:gap-3 mb-3">
@@ -436,17 +393,17 @@ export function AlertsManagement() {
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <Shield className="w-3 h-3 flex-shrink-0" />
-                            <span className="break-words">Source: {alert.source}</span>
+                            <span className="break-words">Source: {alert.source || 'Unknown'}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Users className="w-3 h-3 flex-shrink-0" />
-                            <span className="break-words">Assigned: {alert.assignedTo}</span>
+                            <span className="break-words">Assigned: {alert.assigned_to_profile?.full_name || 'Unassigned'}</span>
                           </div>
                         </div>
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <Clock className="w-3 h-3 flex-shrink-0" />
-                            <span>Age: {Math.round((Date.now() - new Date(alert.timestamp).getTime()) / 60000)}m</span>
+                            <span>Age: {Math.round((Date.now() - new Date(alert.created_at || alert.timestamp).getTime()) / 60000)}m</span>
                           </div>
                         </div>
                       </div>
@@ -454,14 +411,14 @@ export function AlertsManagement() {
                       {/* Tags and Actions */}
                       <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 pt-3 border-t border-border">
                         <div className="flex items-center gap-1 flex-wrap">
-                          {alert.tags.map((tag) => (
+                          {alert.tags && alert.tags.length > 0 && alert.tags.map((tag: string) => (
                             <Badge key={tag} variant="secondary" className="text-xs">
                               #{tag}
                             </Badge>
                           ))}
                         </div>
                         <div className="flex items-center gap-1 flex-wrap">
-                          {alert.actions.map((action) => (
+                          {alert.actions && alert.actions.length > 0 && alert.actions.map((action: string) => (
                             <Badge key={action} className="bg-primary text-primary-foreground text-xs">
                               {action.replace("-", " ")}
                             </Badge>
@@ -472,7 +429,13 @@ export function AlertsManagement() {
                       {/* Action Buttons */}
                       <div className="flex flex-wrap items-center gap-2 mt-3">
                         {alert.status === "active" && (
-                          <Button size="sm" variant="outline" className="h-8 text-xs tap-target">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 text-xs tap-target"
+                            onClick={() => handleStatusUpdate(alert.id, 'acknowledged')}
+                            disabled={isPerformingAction === alert.id}
+                          >
                             <Eye className="w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2" />
                             <span className="hidden xs:inline">Acknowledge</span>
                             <span className="xs:hidden">Ack</span>
@@ -488,16 +451,34 @@ export function AlertsManagement() {
                           <span className="xs:hidden">Note</span>
                         </Button>
                         {alert.status !== "resolved" && (
-                          <Button size="sm" variant="default" className="h-8 text-xs tap-target">
+                          <Button
+                            size="sm"
+                            variant="default"
+                            className="h-8 text-xs tap-target"
+                            onClick={() => handleStatusUpdate(alert.id, 'resolved')}
+                            disabled={isPerformingAction === alert.id}
+                          >
                             <CheckCircle className="w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2" />
                             Resolve
                           </Button>
                         )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </ScrollArea>
+                  )) : (
+                      <div className="text-center py-8">
+                        <Shield className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                        <h3 className="text-lg font-semibold mb-2">No Alerts Found</h3>
+                        <p className="text-muted-foreground">
+                          {searchQuery || selectedSeverity !== "all" || selectedStatus !== "all"
+                            ? "No alerts match your current filters."
+                            : "No alerts have been created yet."
+                          }
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

@@ -80,7 +80,7 @@ export function PublicHeader({ showNavigation = true }: PublicHeaderProps) {
                 >
                   <User className="h-4 w-4" />
                   <span className="hidden lg:inline truncate max-w-32">
-                    {user.firstName || user.email}
+                    {user.full_name || user.email}
                   </span>
                 </Button>
                 <Button
@@ -189,7 +189,7 @@ export function PublicHeader({ showNavigation = true }: PublicHeaderProps) {
                       <div className="flex items-center gap-3 p-3 bg-background rounded-lg border">
                         <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                         <span className="text-sm font-medium truncate">
-                          {user.firstName || user.email}
+                          {user.full_name || user.email}
                         </span>
                       </div>
 
