@@ -85,7 +85,7 @@ export default function RegisterPage() {
         <div className="flex items-center justify-center mb-8">
           <Shield className="h-12 w-12 text-primary mr-3" />
           <div>
-            <h1 className="text-2xl font-bold">CrisisLens</h1>
+            <h1 className="text-2xl font-bold">Veritas</h1>
             <p className="text-sm text-muted-foreground">Join the Community</p>
           </div>
         </div>
@@ -105,8 +105,8 @@ export default function RegisterPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="full-name">Full Name</Label>
-                <Input id="full-name" name="full-name" placeholder="John Doe" required />
+                <Label htmlFor="full_name">Full Name</Label>
+                <Input id="full_name" name="full_name" placeholder="John Doe" required />
               </div>
 
               <div className="space-y-2">

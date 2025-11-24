@@ -229,7 +229,7 @@ export default function PrivacyPage() {
               <p>
                 <strong>Privacy Officer</strong>
               </p>
-              <p>Email: privacy@crisislens.org</p>
+              <p>Email: privacy@veritas.org</p>
               <p>Phone: +1 (555) 123-4567</p>
               <p>
                 Address: 123 Crisis Response Ave

@@ -12,7 +12,7 @@ export default function TermsPage() {
             <Scale className="w-12 h-12 text-primary" />
             <div>
               <h1 className="text-4xl font-bold">Terms of Service</h1>
-              <p className="text-xl text-muted-foreground">Terms and conditions for using CrisisLens</p>
+              <p className="text-xl text-muted-foreground">Terms and conditions for using Veritas</p>
             </div>
           </div>
           <p className="text-sm text-muted-foreground">Last updated: January 2025</p>
@@ -25,8 +25,8 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent className="prose prose-gray dark:prose-invert max-w-none">
             <p>
-              By accessing and using CrisisLens ("the Service"), you agree to be bound by these Terms of Service
-              ("Terms"). If you do not agree to these Terms, please do not use our Service. CrisisLens is a crisis
+              By accessing and using Veritas ("the Service"), you agree to be bound by these Terms of Service
+              ("Terms"). If you do not agree to these Terms, please do not use our Service. Veritas is a crisis
               monitoring and information verification platform designed to provide accurate, real-time information
               during emergency situations.
             </p>
@@ -131,7 +131,7 @@ export default function TermsPage() {
             <div>
               <h3 className="font-semibold mb-2">Best Efforts</h3>
               <p className="text-muted-foreground">
-                While we strive to provide accurate and up-to-date information, CrisisLens cannot guarantee the
+                While we strive to provide accurate and up-to-date information, Veritas cannot guarantee the
                 completeness, accuracy, or timeliness of all information on the platform. Users should verify critical
                 information through official sources.
               </p>
@@ -140,7 +140,7 @@ export default function TermsPage() {
               <h3 className="font-semibold mb-2">Emergency Situations</h3>
               <p className="text-muted-foreground">
                 In life-threatening emergencies, always contact local emergency services (911, 112, etc.) immediately.
-                Do not rely solely on CrisisLens for emergency response.
+                Do not rely solely on Veritas for emergency response.
               </p>
             </div>
             <div>
@@ -165,14 +165,14 @@ export default function TermsPage() {
             <div>
               <h3 className="font-semibold mb-2">Our Rights</h3>
               <p className="text-muted-foreground">
-                CrisisLens and its original content, features, and functionality are owned by us and are protected by
+                Veritas and its original content, features, and functionality are owned by us and are protected by
                 international copyright, trademark, and other intellectual property laws.
               </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">User Content</h3>
               <p className="text-muted-foreground">
-                By submitting content to CrisisLens (such as misinformation reports), you grant us a non-exclusive,
+                By submitting content to Veritas (such as misinformation reports), you grant us a non-exclusive,
                 worldwide, royalty-free license to use, modify, and distribute such content for the purpose of providing
                 and improving our services.
               </p>
@@ -189,14 +189,14 @@ export default function TermsPage() {
             <div>
               <h3 className="font-semibold mb-2">Service Limitations</h3>
               <p className="text-muted-foreground">
-                CrisisLens is provided "as is" without warranties of any kind. We do not guarantee that the service will
+                Veritas is provided "as is" without warranties of any kind. We do not guarantee that the service will
                 be error-free, secure, or available at all times.
               </p>
             </div>
             <div>
               <h3 className="font-semibold mb-2">Liability Limits</h3>
               <p className="text-muted-foreground">
-                To the maximum extent permitted by law, CrisisLens shall not be liable for any indirect, incidental,
+                To the maximum extent permitted by law, Veritas shall not be liable for any indirect, incidental,
                 special, consequential, or punitive damages, including but not limited to loss of profits, data, or use.
               </p>
             </div>
@@ -247,7 +247,7 @@ export default function TermsPage() {
           <CardContent>
             <p className="text-muted-foreground">
               We reserve the right to modify these Terms at any time. We will notify users of any material changes via
-              email or through the platform. Your continued use of CrisisLens after such modifications constitutes
+              email or through the platform. Your continued use of Veritas after such modifications constitutes
               acceptance of the updated Terms.
             </p>
           </CardContent>
@@ -269,7 +269,7 @@ export default function TermsPage() {
               <p>
                 <strong>Legal Department</strong>
               </p>
-              <p>Email: legal@crisislens.org</p>
+              <p>Email: legal@veritas.org</p>
               <p>Phone: +1 (555) 123-4567</p>
               <p>
                 Address: 123 Crisis Response Ave
