@@ -97,16 +97,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
 
               {user ? (
                 <>
-                  {user.role === "admin" && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="tap-target"
-                    >
-                      <Link href="/admin">Admin Portal</Link>
-                    </Button>
-                  )}
                   <Button
                     variant="ghost"
                     size="sm"
@@ -239,16 +229,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
                           {user.firstName || user.email}
                         </span>
                       </div>
-                      {user.role === "admin" && (
-                        <Button
-                          asChild
-                          className="w-full tap-target h-10 text-sm"
-                        >
-                          <Link href="/admin" onClick={() => setIsOpen(false)}>
-                            Admin Portal
-                          </Link>
-                        </Button>
-                      )}
                       <div className="flex gap-2">
                         <Button
                           variant="outline"

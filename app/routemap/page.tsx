@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Map, FileCode, Shield } from "lucide-react";
+import { LayoutDashboard, Map, FileCode } from "lucide-react";
 
 export default function RouteMapPage() {
   const pathname = usePathname();
@@ -33,25 +33,10 @@ export default function RouteMapPage() {
         { path: "/verify", name: "Verify" },
         { path: "/updates", name: "Updates" },
         { path: "/help", name: "Help" },
+        { path: "/analytics", name: "Analytics" },
+        { path: "/trends", name: "Trends" },
       ],
       icon: <LayoutDashboard className="w-5 h-5 text-green-500" />,
-    },
-    {
-      name: "Admin Pages",
-      routes: [
-        { path: "/admin", name: "Admin Dashboard" },
-        { path: "/admin/alerts", name: "Alerts Management" },
-        { path: "/admin/analytics", name: "Analytics" },
-        { path: "/admin/misinformation", name: "Misinformation" },
-        { path: "/admin/monitoring", name: "Monitoring" },
-        { path: "/admin/settings", name: "Settings" },
-        { path: "/admin/sources", name: "Sources" },
-        { path: "/admin/system", name: "System" },
-        { path: "/admin/trends", name: "Trends" },
-        { path: "/admin/users", name: "Users" },
-        { path: "/admin/verification", name: "Verification" },
-      ],
-      icon: <Shield className="w-5 h-5 text-blue-500" />,
     },
     {
       name: "Utilities",

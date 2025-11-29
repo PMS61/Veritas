@@ -31,13 +31,6 @@ export function GettingStarted() {
       highlight: { top: 620, left: 120, width: 520, height: 220 },
     },
     {
-      title: "Explore dashboard (admin)",
-      desc: "Admins can triage alerts, manage sources and tune monitoring settings.",
-      action: { href: "/admin", label: "Open admin" },
-      highlight: { top: 120, left: 760, width: 360, height: 420 },
-      enableDevAuth: true,
-    },
-    {
       title: "Subscribe & monitor",
       desc: "Save topics or create alerts to receive updates when relevant claims appear.",
       action: { href: "/dashboard", label: "Open dashboard" },
@@ -186,10 +179,10 @@ export function GettingStarted() {
 
               <div className="mt-4 flex gap-2">
                 <Button asChild>
-                  <Link href="/login">Admin sign in</Link>
+                  <Link href="/login">Sign in</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="/admin/sources">Open Sources</Link>
+                  <Link href="/analytics">View Analytics</Link>
                 </Button>
               </div>
 
@@ -197,11 +190,11 @@ export function GettingStarted() {
                 <Collapsible>
                   <CollapsibleTrigger asChild>
                     <button className="text-sm text-primary hover:underline flex items-center gap-2">
-                      <Info className="h-4 w-4" /> Admin tips
+                      <Info className="h-4 w-4" /> Tips
                     </button>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="mt-2 text-sm text-muted-foreground">
-                    Use the dashboard filters to focus on high-severity or unverified alerts. Subscribe to system metrics notifications for outages.
+                    Use the dashboard filters to focus on high-severity or unverified alerts. Check analytics and trends for insights.
                   </CollapsibleContent>
                 </Collapsible>
               </div>

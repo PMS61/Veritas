@@ -23,6 +23,8 @@ import {
   Search,
   Bell,
   ExternalLink,
+  BarChart3,
+  TrendingUp,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Link from "next/link";
@@ -253,6 +255,24 @@ export default function PublicDashboard() {
                   >
                     <Search className="h-4 w-4 mr-2" />
                     Verify Information
+                  </Button>
+                </Link>
+                <Link href="/analytics" className="block">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start bg-transparent"
+                  >
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Analytics & Reports
+                  </Button>
+                </Link>
+                <Link href="/trends" className="block">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start bg-transparent"
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2" />
+                    View Trends
                   </Button>
                 </Link>
                 <Link href="/updates" className="block">
